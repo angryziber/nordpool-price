@@ -1,5 +1,7 @@
 import https from 'https'
 
+const json = 'application/json'
+
 export function jsonRequest(url, res) {
   return new Promise((resolve, reject) => {
     let text = ''

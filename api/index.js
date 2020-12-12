@@ -31,6 +31,5 @@ app.get('/api/prices', async (req, res) => {
 
 app.use(express.static('static'))
 
-const json = 'application/json'
 const port = 7070
 app.listen(port, () => console.log(`Listening on port ${port}`))
