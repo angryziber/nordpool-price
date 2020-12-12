@@ -22,6 +22,10 @@ customElements.define('electricity-price', class extends LitElement {
 
   hourPrice(h = this.hour) {
     let d = this.date
+    if (h > 23) {
+      d = Object.keys(this.dayPrices)[0]
+      h -= 24
+    }
     return ((this.dayPrices?.[d]?.[h] ?? Infinity) / 1000).toFixed(4)
   }
 
