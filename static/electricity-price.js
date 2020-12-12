@@ -16,7 +16,10 @@ customElements.define('electricity-price', class extends LitElement {
     this.date = cetDate.toLocaleDateString('lt')
     this.hour = cetDate.getHours()
     this.dayPrices = {}
+    this.loadPrices()
+  }
 
+  loadPrices() {
     fetch('/api/prices?country=' + this.country).then(res => res.json()).then(data => this.dayPrices = data)
   }
 
@@ -28,7 +31,16 @@ customElements.define('electricity-price', class extends LitElement {
       d = Object.keys(this.dayPrices)[0]
       h -= 24
     }
+    else if (h < 0) {
+      d = Object.keys(this.dayPrices)[1]
+      h += 24
+    }
     return this.toPerKWh(this.dayPrices[d]?.[h])
+  }
+
+  changeCountry(e) {
+    this.country = e.target.value
+    this.loadPrices()
   }
 
   static styles = css`
@@ -68,16 +80,29 @@ customElements.define('electricity-price', class extends LitElement {
       bottom: -1.5em;
       white-space: nowrap;
       left: 0; right: 0;
-    }        
+    }
+    
+    h2 select {
+      font-size: 100%;
+      font-weight: bold;
+    }      
   `
 
   render = () => html`
-    <h2>${this.country} current price</h2>
+    <h2>
+      <select .value="${this.country}" @change="${this.changeCountry}">
+        <option>EE</option>
+        <option>FI</option>
+        <option>LV</option>
+        <option>LT</option>
+      </select>
+      current price
+    </h2>
     <h1>${this.hourPrice()} <small>cents/kWh</small></h1>
     <p>${this.date} ${this.hour}-${this.hour + 1} CET</p>
     <h3>Prev: ${this.hourPrice(this.hour - 1)}, Next: ${this.hourPrice(this.hour + 1)}</h3>
     <ul class="day-prices">
-      ${this.dayPrices[this.date].map((p, h) => html`
+      ${this.dayPrices[this.date]?.map((p, h) => html`
         <li class="${h === this.hour ? 'now' : ''}">
           <div class="bar" style="height: ${p}px"></div>
           <div class="price">${this.toPerKWh(p)}</div>
