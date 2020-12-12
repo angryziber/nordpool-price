@@ -16,9 +16,13 @@ const logger = morgan('[:date] :remote-addr :method :url :body :status :res[cont
 app.use(logger)
 
 app.get('/api/prices', async (req, res) => {
+  // https://www.nordpoolgroup.com/Market-data1/Dayahead/Area-Prices/FI/Hourly/?view=table
+  const countries = {'EE': 47, 'FI': 35, 'LV': 59, 'LT': 53}
+  const country = req.query.country ?? 'EE'
+
   const url = {
     host: 'www.nordpoolgroup.com',
-    path: '/api/marketdata/page/47?currency=,,EUR,EUR'
+    path: `/api/marketdata/page/${countries[country]}?currency=,,EUR,EUR`
   }
   const r = await jsonRequest(url, res)
   res.header('cache-control', 'max-age=3600')
