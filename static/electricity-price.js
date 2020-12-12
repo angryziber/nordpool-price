@@ -36,19 +36,39 @@ customElements.define('electricity-price', class extends LitElement {
       text-align: center;
     }
     
-    ul.day-prices {
+    .day-prices {
       display: block;
       list-style: none;
     }
     
-    ul.day-prices li {
+    .day-prices li {
       display: inline-block;
-      margin-right: 1em;
+      position: relative;
+      height: 100px;
+      width: 3vw;
     }
     
-    .now {
+    .day-prices .now {
       color: red;
     }
+    
+    .day-prices .price, .day-prices .bar {
+      position: absolute;
+      bottom: 0;
+      left: 0; right: 0;
+    }
+    
+    .day-prices .bar {
+      background: lightblue;
+      z-index: -1;
+    }
+    
+    .day-prices .hour {
+      position: absolute;
+      bottom: -1.5em;
+      white-space: nowrap;
+      left: 0; right: 0;
+    }        
   `
 
   render = () => html`
@@ -57,7 +77,13 @@ customElements.define('electricity-price', class extends LitElement {
     <p>${this.date} ${this.hour}-${this.hour + 1} CET</p>
     <h3>Prev: ${this.hourPrice(this.hour - 1)}, Next: ${this.hourPrice(this.hour + 1)}</h3>
     <ul class="day-prices">
-      ${this.dayPrices[this.date].map((p, h) => html`<li class="${h === this.hour ? 'now' : ''}">${this.toPerKWh(p)}</li>`)}
+      ${this.dayPrices[this.date].map((p, h) => html`
+        <li class="${h === this.hour ? 'now' : ''}">
+          <div class="bar" style="height: ${p}px"></div>
+          <div class="price">${this.toPerKWh(p)}</div>
+          <div class="hour">${h}-${h+1}</div>
+        </li>
+      `)}
     </ul>
   `
 })
