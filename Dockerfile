@@ -8,6 +8,7 @@ COPY *.json ./
 RUN npm ci
 
 COPY . ./
+RUN npm test
 
 USER app
 CMD node api
