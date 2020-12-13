@@ -1,0 +1,12 @@
+version: '3.1'
+
+services:
+  nordpoolprice:
+    build: .
+    restart: always
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

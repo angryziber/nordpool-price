@@ -1,0 +1,7 @@
+version: '3.1'
+
+# for local development
+services:
+  nordpoolprice:
+    ports:
+      - 127.0.0.1:7070:7070
