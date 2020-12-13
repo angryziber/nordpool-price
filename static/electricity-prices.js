@@ -66,14 +66,14 @@ customElements.define('electricity-prices', class extends LitElement {
   render = () => html`
     <h2>
       NordPool
-      <country-select country=${this.country} @change="${this.changeCountry}"></country-select>
+      <country-select country=${this.country} @change="${this.changeCountry}"/>
     </h2>
     <p class="muted">${this.date} ${this.hour}-${this.hour + 1} CET</p>
     <div class="row">
-      <price-card price=${this.hourPrice(this.hour - 1)} class="prev"></price-card>
-      <price-card price=${this.hourPrice()} trend=${this.hourPrice(this.hour + 1) - this.hourPrice()}></price-card>
-      <price-card price=${this.hourPrice(this.hour + 1)} class="next"></price-card>
+      <price-card price=${this.hourPrice(this.hour - 1)} class="prev"/>
+      <price-card price=${this.hourPrice()} trend=${this.hourPrice(this.hour + 1) - this.hourPrice()}/>
+      <price-card price=${this.hourPrice(this.hour + 1)} class="next"/>
     </div>
-    <price-graph .prices=${this.dayPrices[this.date]} hour=${this.hour}></price-graph>
+    <price-graph .prices=${this.dayPrices[this.date]} hour=${this.hour}/>
   `
 })
