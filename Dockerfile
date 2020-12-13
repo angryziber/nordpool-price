@@ -8,8 +8,9 @@ COPY *.json ./
 RUN npm ci
 
 COPY . ./
-RUN npm test
 
 USER app
+RUN npm test
+
 CMD node api
 EXPOSE 7070
