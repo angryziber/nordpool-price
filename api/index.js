@@ -3,7 +3,7 @@ import morgan from 'morgan'
 import 'express-async-errors'
 import {jsonRequest} from './jsonRequest.js'
 import {extractPrices} from './prices.js'
-import countries from '../static/countries'
+import countries from '../static/countries.js'
 
 const app = express()
 app.use(express.json())
