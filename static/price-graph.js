@@ -1,15 +1,17 @@
 import {LitElement, html, css} from './deps/lit-element.js'
-import {toPerKWh} from './formatters.js'
+import {toLocalHour, toPerKWh} from './formatters.js'
 
 customElements.define('price-graph', class extends LitElement {
   static properties = {
     prices: {type: Array},
-    hour: {type: Number}
+    hour: {type: Number},
+    hourDiff: {type: Number}
   }
 
   constructor() {
     super()
     this.prices = []
+    this.hourDiff = 0
   }
 
   static styles = css`
@@ -59,7 +61,7 @@ customElements.define('price-graph', class extends LitElement {
         <li class="${h === this.hour ? 'now' : ''}">
           <div class="bar" style="height: ${p}px"></div>
           <div class="price">${toPerKWh(p)}</div>
-          <div class="hour">${h}</div>
+          <div class="hour">${toLocalHour(h, this.hourDiff)}</div>
         </li>
       `)}
     </ul>

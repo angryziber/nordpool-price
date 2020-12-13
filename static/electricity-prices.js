@@ -1,5 +1,5 @@
 import {LitElement, html, css} from './deps/lit-element.js'
-import {toPerKWh} from './formatters.js'
+import {toLocalHour, toPerKWh} from './formatters.js'
 import './price-card.js'
 import './price-graph.js'
 import './country-select.js'
@@ -16,8 +16,9 @@ customElements.define('electricity-prices', class extends LitElement {
   constructor() {
     super()
     this.country = 'EE'
+    this.hourDiff = 1
     const cetDate = new Date()
-    cetDate.setMinutes(-60)
+    cetDate.setMinutes(-this.hourDiff)
     this.day = this.graphDay = cetDate.toLocaleDateString('lt')
     this.hour = cetDate.getHours()
     this.loadPrices()
@@ -69,13 +70,13 @@ customElements.define('electricity-prices', class extends LitElement {
       NordPool
       <country-select country=${this.country} @input=${e => this.changeCountry(e.path[0].value)}/>
     </h2>
-    <p class="muted">${this.day} ${this.hour}-${this.hour + 1} CET</p>
+    <p class="muted">${this.day} ${toLocalHour(this.hour, this.hourDiff)}-${toLocalHour(this.hour + 1, this.hourDiff)} EET</p>
     <div class="row">
       <price-card price=${this.hourPrice(this.hour - 1)} class="prev"/>
       <price-card price=${this.hourPrice()} trend=${this.hourPrice(this.hour + 1) - this.hourPrice()}/>
       <price-card price=${this.hourPrice(this.hour + 1)} class="next"/>
     </div>
-    <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour}/>
+    <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} hourDiff=${this.hourDiff}/>
     <select @input=${e => this.graphDay = e.target.value} style="margin-top: 2em">
       ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day}>${day}</option>`)}
     </select>  
