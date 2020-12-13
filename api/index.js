@@ -9,8 +9,8 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-morgan.token('remote-addr', req => req.headers['x-forwarded-for'] || req.connection.remoteAddress);
-morgan.token('body', req => JSON.stringify(req.body));
+morgan.token('remote-addr', req => req.headers['x-forwarded-for'] || req.connection.remoteAddress)
+morgan.token('body', req => JSON.stringify(req.body))
 const logger = morgan('[:date] :remote-addr :method :url :body :status :res[content-length] :referrer :user-agent - :response-time ms', {
   skip: req => req.header('User-Agent')?.includes('UptimeRobot')
 })
