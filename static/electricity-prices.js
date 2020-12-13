@@ -1,4 +1,5 @@
 import {LitElement, html, css} from 'https://cdn.skypack.dev/lit-element'
+import './price-card.js'
 
 customElements.define('electricity-prices', class extends LitElement {
   static properties = {
@@ -46,6 +47,15 @@ customElements.define('electricity-prices', class extends LitElement {
   static styles = css`
     :host {
       text-align: center;
+    }
+    
+    .row {
+      display: flex;
+      justify-content: center;
+    }
+    
+    .row .prev, .row .next {
+      opacity: 0.3;
     }
     
     .day-prices {
@@ -98,9 +108,12 @@ customElements.define('electricity-prices', class extends LitElement {
       </select>
       current price
     </h2>
-    <h1>${this.hourPrice()} <small>cents/kWh</small></h1>
+    <div class="row">
+      <price-card price="${this.hourPrice(this.hour - 1)}" class="prev"></price-card>
+      <price-card price="${this.hourPrice()}"></price-card>
+      <price-card price="${this.hourPrice(this.hour + 1)}" class="next"></price-card>
+    </div>
     <p>${this.date} ${this.hour}-${this.hour + 1} CET</p>
-    <h3>Prev: ${this.hourPrice(this.hour - 1)}, Next: ${this.hourPrice(this.hour + 1)}</h3>
     <ul class="day-prices">
       ${this.dayPrices[this.date]?.map((p, h) => html`
         <li class="${h === this.hour ? 'now' : ''}">
