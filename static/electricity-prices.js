@@ -1,5 +1,6 @@
 import {LitElement, html, css} from './deps/lit-element.js'
 import {toLocalHour, toPerKWh} from './formatters.js'
+import countries from './countries.js'
 import './price-card.js'
 import './price-graph.js'
 import './country-select.js'
@@ -15,8 +16,7 @@ customElements.define('electricity-prices', class extends LitElement {
 
   constructor() {
     super()
-    this.country = 'EE'
-    this.hourDiff = 1
+    this.changeCountry(localStorage.getItem('country') ?? 'EE')
     const cetDate = new Date()
     cetDate.setMinutes(-this.hourDiff)
     this.day = this.graphDay = cetDate.toLocaleDateString('lt')
@@ -44,7 +44,9 @@ customElements.define('electricity-prices', class extends LitElement {
 
   changeCountry(country) {
     this.country = country
+    this.hourDiff = countries[this.country].hourDiff
     this.loadPrices()
+    localStorage.setItem('country', country)
   }
 
   static styles = css`
