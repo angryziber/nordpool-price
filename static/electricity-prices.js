@@ -64,7 +64,11 @@ customElements.define('electricity-prices', class extends LitElement {
     h2 select {
       font-size: 100%;
       font-weight: bold;
-    }      
+    }
+    
+    .muted {
+      color: gray;
+    }
   `
 
   render = () => html`
@@ -77,12 +81,12 @@ customElements.define('electricity-prices', class extends LitElement {
         <option>LT</option>
       </select>
     </h2>
+    <p class="muted">${this.date} ${this.hour}-${this.hour + 1} CET</p>
     <div class="row">
       <price-card price=${this.hourPrice(this.hour - 1)} class="prev"></price-card>
       <price-card price=${this.hourPrice()} trend=${this.hourPrice(this.hour + 1) - this.hourPrice()}></price-card>
       <price-card price=${this.hourPrice(this.hour + 1)} class="next"></price-card>
     </div>
-    <p>${this.date} ${this.hour}-${this.hour + 1} CET</p>
     <price-graph .prices=${this.dayPrices[this.date]} hour=${this.hour}></price-graph>
   `
 })
