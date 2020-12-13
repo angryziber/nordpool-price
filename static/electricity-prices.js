@@ -1,4 +1,4 @@
-import {LitElement, html, css} from 'https://cdn.skypack.dev/lit-element'
+import {LitElement, html, css} from './deps/lit-element.js'
 import {toPerKWh} from './formatters.js'
 import './price-card.js'
 import './price-graph.js'

@@ -1,4 +1,4 @@
-import {LitElement, html, css} from 'https://cdn.skypack.dev/lit-element'
+import {LitElement, html, css} from './deps/lit-element.js'
 
 customElements.define('price-card', class extends LitElement {
   static properties = {
