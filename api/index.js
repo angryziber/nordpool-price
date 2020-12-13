@@ -18,11 +18,11 @@ app.use(logger)
 
 app.get('/api/prices', async (req, res) => {
   // https://www.nordpoolgroup.com/Market-data1/Dayahead/Area-Prices/FI/Hourly/?view=table
-  const country = req.query.country ?? 'EE'
+  const country = countries[req.query.country ?? 'EE']
 
   const url = {
     host: 'www.nordpoolgroup.com',
-    path: `/api/marketdata/page/${countries[country]}?currency=,,EUR,EUR`
+    path: `/api/marketdata/page/${country.pageId}?currency=,EUR,EUR,EUR` + (country.entityName ? '&entityName=' + country.entityName : '')
   }
   const r = await jsonRequest(url, res)
   res.header('cache-control', 'max-age=3600')
