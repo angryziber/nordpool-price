@@ -46,10 +46,6 @@ customElements.define('electricity-prices', class extends LitElement {
   }
 
   static styles = css`
-    :host {
-      text-align: center;
-    }
-    
     .row {
       display: flex;
       justify-content: center;
