@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node api",
-    "test": "node test/*.test.js"
+    "test": "node test/*.test.js test/*/*.test.js"
   },
   "author": "",
   "license": "ISC",
