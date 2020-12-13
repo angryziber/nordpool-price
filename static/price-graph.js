@@ -57,7 +57,7 @@ customElements.define('price-graph', class extends LitElement {
 
   render = () => html`
     <ul class="day-prices">
-      ${this.prices.map((p, h) => html`
+      ${this.prices?.map((p, h) => html`
         <li class="${h === this.hour ? 'now' : ''}">
           <div class="bar" style="height: ${p}px"></div>
           <div class="price">${toPerKWh(p)}</div>
