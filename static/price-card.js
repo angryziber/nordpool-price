@@ -2,7 +2,8 @@ import {LitElement, html, css} from 'https://cdn.skypack.dev/lit-element'
 
 customElements.define('price-card', class extends LitElement {
   static properties = {
-    price: {}
+    price: {},
+    trend: {}
   }
 
   static styles = css`
@@ -18,11 +19,14 @@ customElements.define('price-card', class extends LitElement {
       color: gray;
       font-size: 50%;
     }
+    
+    .up {color: darkred}
+    .down {color: darkgreen}
   `
 
   render = () => html`
     <h1>
-      ${this.price}
+      ${this.price}${this.trend > 0 ? html`<span class="up">▲</span>` : this.trend < 0 ? html`<span class="down">▼</span>` : ''}
       <small>cents/kWh</small>
     </h1>
   `
