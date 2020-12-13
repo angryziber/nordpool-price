@@ -41,8 +41,8 @@ customElements.define('electricity-prices', class extends LitElement {
     return toPerKWh(this.dayPrices[d]?.[h])
   }
 
-  changeCountry(e) {
-    this.country = e.target.value
+  changeCountry(country) {
+    this.country = country
     this.loadPrices()
   }
 
@@ -67,7 +67,7 @@ customElements.define('electricity-prices', class extends LitElement {
   render = () => html`
     <h2>
       NordPool
-      <country-select country=${this.country} @change=${this.changeCountry}/>
+      <country-select country=${this.country} @input=${e => this.changeCountry(e.path[0].value)}/>
     </h2>
     <p class="muted">${this.day} ${this.hour}-${this.hour + 1} CET</p>
     <div class="row">
@@ -76,7 +76,7 @@ customElements.define('electricity-prices', class extends LitElement {
       <price-card price=${this.hourPrice(this.hour + 1)} class="next"/>
     </div>
     <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour}/>
-    <select @change=${e => this.graphDay = e.target.value} style="margin-top: 2em">
+    <select @input=${e => this.graphDay = e.target.value} style="margin-top: 2em">
       ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day}>${day}</option>`)}
     </select>  
   `
