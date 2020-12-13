@@ -18,11 +18,11 @@ customElements.define('electricity-prices', class extends LitElement {
     cetDate.setMinutes(-60)
     this.date = cetDate.toLocaleDateString('lt')
     this.hour = cetDate.getHours()
-    this.dayPrices = {}
     this.loadPrices()
   }
 
   loadPrices() {
+    this.dayPrices = {}
     fetch('/api/prices?country=' + this.country).then(res => res.json()).then(data => this.dayPrices = data)
   }
 
@@ -69,13 +69,13 @@ customElements.define('electricity-prices', class extends LitElement {
 
   render = () => html`
     <h2>
+      NordPool
       <select .value="${this.country}" @change="${this.changeCountry}">
         <option>EE</option>
         <option>FI</option>
         <option>LV</option>
         <option>LT</option>
       </select>
-      current price
     </h2>
     <div class="row">
       <price-card price=${this.hourPrice(this.hour - 1)} class="prev"></price-card>
