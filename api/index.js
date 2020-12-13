@@ -3,6 +3,7 @@ import morgan from 'morgan'
 import 'express-async-errors'
 import {jsonRequest} from './jsonRequest.js'
 import {extractPrices} from './prices.js'
+import countries from '../static/countries'
 
 const app = express()
 app.use(express.json())
@@ -17,7 +18,6 @@ app.use(logger)
 
 app.get('/api/prices', async (req, res) => {
   // https://www.nordpoolgroup.com/Market-data1/Dayahead/Area-Prices/FI/Hourly/?view=table
-  const countries = {'EE': 47, 'FI': 35, 'LV': 59, 'LT': 53}
   const country = req.query.country ?? 'EE'
 
   const url = {

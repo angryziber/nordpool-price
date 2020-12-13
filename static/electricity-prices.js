@@ -2,6 +2,7 @@ import {LitElement, html, css} from 'https://cdn.skypack.dev/lit-element'
 import {toPerKWh} from './formatters.js'
 import './price-card.js'
 import './price-graph.js'
+import countries from './countries.js'
 
 customElements.define('electricity-prices', class extends LitElement {
   static properties = {
@@ -74,11 +75,8 @@ customElements.define('electricity-prices', class extends LitElement {
   render = () => html`
     <h2>
       NordPool
-      <select .value="${this.country}" @change="${this.changeCountry}">
-        <option>EE</option>
-        <option>FI</option>
-        <option>LV</option>
-        <option>LT</option>
+      <select @change="${this.changeCountry}">
+        ${Object.keys(countries).map(code => html`<option ?selected=${this.country === code}>${code}</option>`)}
       </select>
     </h2>
     <p class="muted">${this.date} ${this.hour}-${this.hour + 1} CET</p>
