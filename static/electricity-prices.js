@@ -2,7 +2,7 @@ import {LitElement, html, css} from './deps/lit-element.js'
 import {toPerKWh} from './formatters.js'
 import './price-card.js'
 import './price-graph.js'
-import countries from './countries.js'
+import './country-select.js'
 
 customElements.define('electricity-prices', class extends LitElement {
   static properties = {
@@ -75,9 +75,7 @@ customElements.define('electricity-prices', class extends LitElement {
   render = () => html`
     <h2>
       NordPool
-      <select @change="${this.changeCountry}">
-        ${Object.keys(countries).map(code => html`<option ?selected=${this.country === code}>${code}</option>`)}
-      </select>
+      <country-select country=${this.country} @change="${this.changeCountry}"></country-select>
     </h2>
     <p class="muted">${this.date} ${this.hour}-${this.hour + 1} CET</p>
     <div class="row">
