@@ -1,5 +1,7 @@
 import {LitElement, html, css} from 'https://cdn.skypack.dev/lit-element'
+import {toPerKWh} from './formatters.js'
 import './price-card.js'
+import './price-graph.js'
 
 customElements.define('electricity-prices', class extends LitElement {
   static properties = {
@@ -24,8 +26,6 @@ customElements.define('electricity-prices', class extends LitElement {
     fetch('/api/prices?country=' + this.country).then(res => res.json()).then(data => this.dayPrices = data)
   }
 
-  toPerKWh = p => p >= 0 ? (p / 10).toFixed(2) : '?'
-
   hourPrice(h = this.hour) {
     let d = this.date
     if (h > 23) {
@@ -36,7 +36,7 @@ customElements.define('electricity-prices', class extends LitElement {
       d = Object.keys(this.dayPrices)[1]
       h += 24
     }
-    return this.toPerKWh(this.dayPrices[d]?.[h])
+    return toPerKWh(this.dayPrices[d]?.[h])
   }
 
   changeCountry(e) {
@@ -52,46 +52,15 @@ customElements.define('electricity-prices', class extends LitElement {
     .row {
       display: flex;
       justify-content: center;
+      width: 100%;
+      overflow-x: hidden;
+      padding: 0.5em 0;
     }
     
     .row .prev, .row .next {
       opacity: 0.3;
     }
-    
-    .day-prices {
-      display: block;
-      list-style: none;
-    }
-    
-    .day-prices li {
-      display: inline-block;
-      position: relative;
-      height: 100px;
-      width: 3vw;
-    }
-    
-    .day-prices .now {
-      color: red;
-    }
-    
-    .day-prices .price, .day-prices .bar {
-      position: absolute;
-      bottom: 0;
-      left: 0; right: 0;
-    }
-    
-    .day-prices .bar {
-      background: lightblue;
-      z-index: -1;
-    }
-    
-    .day-prices .hour {
-      position: absolute;
-      bottom: -1.5em;
-      white-space: nowrap;
-      left: 0; right: 0;
-    }
-    
+        
     h2 select {
       font-size: 100%;
       font-weight: bold;
@@ -109,19 +78,11 @@ customElements.define('electricity-prices', class extends LitElement {
       current price
     </h2>
     <div class="row">
-      <price-card price="${this.hourPrice(this.hour - 1)}" class="prev"></price-card>
-      <price-card price="${this.hourPrice()}" trend="${this.hourPrice(this.hour + 1) - this.hourPrice()}"></price-card>
-      <price-card price="${this.hourPrice(this.hour + 1)}" class="next"></price-card>
+      <price-card price=${this.hourPrice(this.hour - 1)} class="prev"></price-card>
+      <price-card price=${this.hourPrice()} trend=${this.hourPrice(this.hour + 1) - this.hourPrice()}></price-card>
+      <price-card price=${this.hourPrice(this.hour + 1)} class="next"></price-card>
     </div>
     <p>${this.date} ${this.hour}-${this.hour + 1} CET</p>
-    <ul class="day-prices">
-      ${this.dayPrices[this.date]?.map((p, h) => html`
-        <li class="${h === this.hour ? 'now' : ''}">
-          <div class="bar" style="height: ${p}px"></div>
-          <div class="price">${this.toPerKWh(p)}</div>
-          <div class="hour">${h}-${h+1}</div>
-        </li>
-      `)}
-    </ul>
+    <price-graph .prices=${this.dayPrices[this.date]} hour=${this.hour}></price-graph>
   `
 })
