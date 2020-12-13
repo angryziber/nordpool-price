@@ -61,12 +61,7 @@ customElements.define('electricity-prices', class extends LitElement {
     .row .prev, .row .next {
       opacity: 0.3;
     }
-        
-    h2 select {
-      font-size: 100%;
-      font-weight: bold;
-    }
-    
+            
     .muted {
       color: gray;
     }
