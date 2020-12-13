@@ -8,9 +8,9 @@ customElements.define('electricity-prices', class extends LitElement {
   static properties = {
     country: {},
     dayPrices: {attribute: false},
-    date: {},
+    day: {},
     hour: {},
-    graphDate: {attribute: false}
+    graphDay: {attribute: false}
   }
 
   constructor() {
@@ -18,7 +18,7 @@ customElements.define('electricity-prices', class extends LitElement {
     this.country = 'EE'
     const cetDate = new Date()
     cetDate.setMinutes(-60)
-    this.date = this.graphDate = cetDate.toLocaleDateString('lt')
+    this.day = this.graphDay = cetDate.toLocaleDateString('lt')
     this.hour = cetDate.getHours()
     this.loadPrices()
   }
@@ -29,7 +29,7 @@ customElements.define('electricity-prices', class extends LitElement {
   }
 
   hourPrice(h = this.hour) {
-    let d = this.date
+    let d = this.day
     if (h > 23) {
       d = Object.keys(this.dayPrices)[0]
       h -= 24
@@ -69,15 +69,15 @@ customElements.define('electricity-prices', class extends LitElement {
       NordPool
       <country-select country=${this.country} @change=${this.changeCountry}/>
     </h2>
-    <p class="muted">${this.date} ${this.hour}-${this.hour + 1} CET</p>
+    <p class="muted">${this.day} ${this.hour}-${this.hour + 1} CET</p>
     <div class="row">
       <price-card price=${this.hourPrice(this.hour - 1)} class="prev"/>
       <price-card price=${this.hourPrice()} trend=${this.hourPrice(this.hour + 1) - this.hourPrice()}/>
       <price-card price=${this.hourPrice(this.hour + 1)} class="next"/>
     </div>
-    <price-graph .prices=${this.dayPrices[this.graphDate]} hour=${this.graphDate === this.date && this.hour}/>
-    <select @change=${e => this.graphDate = e.target.value} style="margin-top: 2em">
-      ${Object.keys(this.dayPrices).reverse().map(date => html`<option ?selected=${this.graphDate === date}>${date}</option>`)}
+    <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour}/>
+    <select @change=${e => this.graphDay = e.target.value} style="margin-top: 2em">
+      ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day}>${day}</option>`)}
     </select>  
   `
 })
