@@ -1,6 +1,6 @@
 import {LitElement, html, css} from 'https://cdn.skypack.dev/lit-element'
 
-customElements.define('electricity-price', class extends LitElement {
+customElements.define('electricity-prices', class extends LitElement {
   static properties = {
     country: {},
     dayPrices: {attribute: false},
