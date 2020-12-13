@@ -23,7 +23,7 @@ customElements.define('price-graph', class extends LitElement {
     li {
       display: block;
       position: relative;
-      height: 100px;
+      height: 150px;
       width: 3vw;
     }
         

@@ -9,7 +9,8 @@ customElements.define('electricity-prices', class extends LitElement {
     country: {},
     dayPrices: {attribute: false},
     date: {},
-    hour: {}
+    hour: {},
+    graphDate: {attribute: false}
   }
 
   constructor() {
@@ -17,7 +18,7 @@ customElements.define('electricity-prices', class extends LitElement {
     this.country = 'EE'
     const cetDate = new Date()
     cetDate.setMinutes(-60)
-    this.date = cetDate.toLocaleDateString('lt')
+    this.date = this.graphDate = cetDate.toLocaleDateString('lt')
     this.hour = cetDate.getHours()
     this.loadPrices()
   }
@@ -66,7 +67,7 @@ customElements.define('electricity-prices', class extends LitElement {
   render = () => html`
     <h2>
       NordPool
-      <country-select country=${this.country} @change="${this.changeCountry}"/>
+      <country-select country=${this.country} @change=${this.changeCountry}/>
     </h2>
     <p class="muted">${this.date} ${this.hour}-${this.hour + 1} CET</p>
     <div class="row">
@@ -74,6 +75,9 @@ customElements.define('electricity-prices', class extends LitElement {
       <price-card price=${this.hourPrice()} trend=${this.hourPrice(this.hour + 1) - this.hourPrice()}/>
       <price-card price=${this.hourPrice(this.hour + 1)} class="next"/>
     </div>
-    <price-graph .prices=${this.dayPrices[this.date]} hour=${this.hour}/>
+    <price-graph .prices=${this.dayPrices[this.graphDate]} hour=${this.graphDate === this.date && this.hour}/>
+    <select @change=${e => this.graphDate = e.target.value} style="margin-top: 2em">
+      ${Object.keys(this.dayPrices).reverse().map(date => html`<option ?selected=${this.graphDate === date}>${date}</option>`)}
+    </select>  
   `
 })
