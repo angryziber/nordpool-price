@@ -1,14 +1,16 @@
 import {LitElement, html, css} from './deps/lit-element.js'
+import {toLocalHour} from './formatters.js'
 
 customElements.define('cost-calculator', class extends LitElement {
   static properties = {
     hourPrices: {type: Array},
     startHour: {type: Number},
+    hourDiff: {type: Number},
     gridPrice: {type: Number},
     taxPercent: {type: Number},
-    kW: {type: Number},
-    hours: {type: Number},
-    detailsOpen: {type: Boolean}
+    kW: {attribute: false},
+    hours: {attribute: false},
+    detailsOpen: {attribute: false}
   }
 
   constructor() {
@@ -67,6 +69,7 @@ customElements.define('cost-calculator', class extends LitElement {
       <input type="number" .value=${this.kW} @input=${e => this.kW = e.target.value}> kW
     </span>
     <span class="field">
+      start at ${toLocalHour(this.startHour, this.hourDiff)} for
       <input type="number" .value=${this.hours} @input=${e => this.hours = e.target.value}> h
     </span>
     = <strong>${this.calc().toFixed(2)} €</strong>

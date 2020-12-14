@@ -20,7 +20,7 @@ customElements.define('electricity-prices', class extends LitElement {
     super()
     this.changeCountry(localStorage.getItem('country') ?? 'EE')
     const cetDate = new Date()
-    cetDate.setMinutes(-this.hourDiff)
+    cetDate.setMinutes(-this.hourDiff * 60)
     this.day = this.graphDay = cetDate.toLocaleDateString('lt')
     this.hour = this.calcHour = cetDate.getHours()
     this.loadPrices()
@@ -88,6 +88,6 @@ customElements.define('electricity-prices', class extends LitElement {
       ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day}>${day}</option>`)}
     </select>
     
-    <cost-calculator .hourPrices=${this.dayPrices[this.graphDay]} startHour=${this.calcHour} style="margin-top: 1.5em"/>
+    <cost-calculator .hourPrices=${this.dayPrices[this.graphDay]} startHour=${this.calcHour} hourDiff=${this.hourDiff} style="margin-top: 1.5em"/>
   `
 })
