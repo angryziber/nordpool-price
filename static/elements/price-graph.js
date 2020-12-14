@@ -10,7 +10,7 @@ customElements.define('price-graph', class extends BaseElement {
 
   constructor() {
     super()
-    this.prices = []
+    this.prices = undefined
     this.hourDiff = 0
   }
 
@@ -44,6 +44,8 @@ customElements.define('price-graph', class extends BaseElement {
     .bar {
       background: lightblue;
       z-index: -1;
+      height: 0;
+      transition: height 0.4s 0.1s;
     }
     
     .now .bar {
@@ -62,7 +64,7 @@ customElements.define('price-graph', class extends BaseElement {
 
   render = () => html`
     <ul class="day-prices">
-      ${this.prices?.map((p, h) => html`
+      ${(this.prices ?? Array(24).fill(0)).map((p, h) => html`
         <li class="${h === this.hour ? 'now' : ''}" @click=${() => this.selected(h)} style="cursor: pointer">
           <div class="bar" style="height: ${p}px"></div>
           <div class="price">${toPerKWh(p)}</div>
