@@ -24,12 +24,13 @@ customElements.define('price-graph', class extends LitElement {
       justify-content: space-between;
       list-style: none;
       padding: 0 1em;
+      height: 150px;
     }
     
     li {
       display: block;
       position: relative;
-      height: 150px;
+      height: 100%;
       width: 3vw;
     }
         
