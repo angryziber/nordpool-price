@@ -6,7 +6,8 @@ customElements.define('cost-calculator', class extends LitElement {
     gridPrice: {type: Number},
     taxPercent: {type: Number},
     kW: {type: Number},
-    hours: {type: Number}
+    hours: {type: Number},
+    detailsOpen: {type: Boolean}
   }
 
   constructor() {
@@ -14,6 +15,7 @@ customElements.define('cost-calculator', class extends LitElement {
     this.gridPrice = 5
     this.taxPercent = 20
     this.selectPredefined(0)
+    this.detailsOpen = false
   }
 
   selectPredefined(i) {
@@ -43,7 +45,10 @@ customElements.define('cost-calculator', class extends LitElement {
     </span>
     = <strong>${(this.kW * this.hours * (this.price + this.gridPrice) * (1 + this.taxPercent / 100) / 100).toFixed(2)} €</strong>
 
-    <div style="margin-top: 2em">
+    <div style="margin: 1em 0">
+      <button @click=${() => this.detailsOpen = !this.detailsOpen}>More ${this.detailsOpen ? 'ᐃ' : 'ᐁ'}</button>
+    </div>
+    <div style="display: ${this.detailsOpen ? 'block' : 'none'}">
       Grid price <input type="number" .value=${this.gridPrice} @input=${e => this.gridPrice = e.target.value}> cents/kWh -
       Tax <input type="number" .value=${this.taxPercent} @input=${e => this.taxPercent = e.target.value}> %
     </div>

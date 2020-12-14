@@ -1,5 +1,5 @@
 export default `
-input, select {
+input, select, button {
   font-size: 1em;
   padding: 2px 4px;
 }
