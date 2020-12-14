@@ -4,6 +4,7 @@ import countries from './countries.js'
 import './price-card.js'
 import './price-graph.js'
 import './country-select.js'
+import './cost-calculator.js'
 
 customElements.define('electricity-prices', class extends LitElement {
   static properties = {
@@ -81,6 +82,9 @@ customElements.define('electricity-prices', class extends LitElement {
     <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} hourDiff=${this.hourDiff}/>
     <select @input=${e => this.graphDay = e.target.value} style="margin-top: 2em">
       ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day}>${day}</option>`)}
-    </select>  
+    </select>
+    <div style="margin-top: 1em">
+      <cost-calculator price=${this.hourPrice()}/>
+    </div>
   `
 })
