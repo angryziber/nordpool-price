@@ -10,7 +10,7 @@ customElements.define('cost-calculator', class extends BaseElement {
     taxPercent: {type: Number},
     kW: {attribute: false},
     hours: {attribute: false},
-    detailsOpen: {attribute: false}
+    detailsOpen: {attribute: false},
   }
 
   constructor() {
@@ -33,6 +33,12 @@ customElements.define('cost-calculator', class extends BaseElement {
       cents += this.kW * (hourPrice + this.gridPrice)
     }
     return cents * (1 + this.taxPercent / 100) / 100
+  }
+
+  updated() {
+    const $cost = this.shadowRoot.querySelector('.cost')
+    $cost.classList.add('updated')
+    setTimeout(() => $cost.classList.remove('updated'), 500)
   }
 
   static styles = css`
@@ -59,6 +65,9 @@ customElements.define('cost-calculator', class extends BaseElement {
         margin: 0.5em 0;
       }
     }
+    
+    .cost {transition: background-color 0.5s}
+    .cost.updated {background-color: yellow}
   `
 
   render = () => html`
@@ -72,7 +81,7 @@ customElements.define('cost-calculator', class extends BaseElement {
       start at ${toLocalHour(this.startHour, this.hourDiff)} for
       <input type="number" .value=${this.hours} @input=${e => this.hours = e.target.value}> h
     </span>
-    = <strong>${this.calc().toFixed(2)} €</strong>
+    = <strong class="cost">${this.calc().toFixed(2)} €</strong>
 
     <div style="margin-top: 1em">
       <button @click=${() => this.detailsOpen = !this.detailsOpen}>More ${this.detailsOpen ? '▴' : '▾'}</button>
