@@ -12,7 +12,8 @@ customElements.define('electricity-prices', class extends LitElement {
     dayPrices: {attribute: false},
     day: {},
     hour: {},
-    graphDay: {attribute: false}
+    graphDay: {attribute: false},
+    calcPrice: {attribute: false}
   }
 
   constructor() {
@@ -25,9 +26,10 @@ customElements.define('electricity-prices', class extends LitElement {
     this.loadPrices()
   }
 
-  loadPrices() {
+  async loadPrices() {
     this.dayPrices = {}
-    fetch('/api/prices?country=' + this.country).then(res => res.json()).then(data => this.dayPrices = data)
+    this.dayPrices = await fetch('/api/prices?country=' + this.country).then(res => res.json())
+    this.calcPrice = this.hourPrice()
   }
 
   hourPrice(h = this.hour) {
@@ -65,7 +67,7 @@ customElements.define('electricity-prices', class extends LitElement {
             
     .muted {
       color: gray;
-    }
+    }    
   `
 
   render = () => html`
@@ -74,17 +76,21 @@ customElements.define('electricity-prices', class extends LitElement {
       <country-select country=${this.country} @input=${e => this.changeCountry(e.path[0].value)}/>
     </h2>
     <p class="muted">${this.day} ${toLocalHour(this.hour, this.hourDiff)}-${toLocalHour(this.hour + 1, this.hourDiff)}</p>
+    
     <div class="row">
       <price-card price=${this.hourPrice(this.hour - 1)} class="prev"/>
       <price-card price=${this.hourPrice()} trend=${this.hourPrice(this.hour + 1) - this.hourPrice()}/>
       <price-card price=${this.hourPrice(this.hour + 1)} class="next"/>
     </div>
-    <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} hourDiff=${this.hourDiff}/>
-    <select @input=${e => this.graphDay = e.target.value} style="margin-top: 2em">
+    
+    <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} 
+                 hourDiff=${this.hourDiff} @selected=${e => this.calcPrice = e.detail}/>
+    <select @input=${e => this.graphDay = e.target.value} style="margin-top: 1.5em">
       ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day}>${day}</option>`)}
     </select>
-    <div style="margin-top: 1em">
-      <cost-calculator price=${this.hourPrice()}/>
+    
+    <div style="margin-top: 2em">
+      <cost-calculator price=${this.calcPrice}/>
     </div>
   `
 })

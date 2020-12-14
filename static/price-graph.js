@@ -14,6 +14,10 @@ customElements.define('price-graph', class extends LitElement {
     this.hourDiff = 0
   }
 
+  selected(p) {
+    this.dispatchEvent(new CustomEvent('selected', {detail: p}))
+  }
+
   static styles = css`
     .day-prices {
       display: flex;
@@ -58,7 +62,7 @@ customElements.define('price-graph', class extends LitElement {
   render = () => html`
     <ul class="day-prices">
       ${this.prices?.map((p, h) => html`
-        <li class="${h === this.hour ? 'now' : ''}">
+        <li class="${h === this.hour ? 'now' : ''}" @click=${() => this.selected(toPerKWh(p))} style="cursor: pointer">
           <div class="bar" style="height: ${p}px"></div>
           <div class="price">${toPerKWh(p)}</div>
           <div class="hour">${toLocalHour(h, this.hourDiff)}</div>
