@@ -20,20 +20,24 @@ customElements.define('price-graph', class extends BaseElement {
 
   static styles = css`
     .day-prices {
+      max-width: 1000px;
+      margin: 0 auto;      
+      padding: 0 1em;
       display: flex;
       justify-content: space-between;
       list-style: none;
-      padding: 0 1em;
       height: 150px;
+      font-size: 80%;
     }
     
     li {
       display: block;
       position: relative;
       height: 100%;
-      width: 3vw;
+      width: 5%;
+      margin: 0 0.3%;
     }
-        
+    
     .price, .bar {
       position: absolute;
       bottom: 0;
@@ -58,7 +62,6 @@ customElements.define('price-graph', class extends BaseElement {
       white-space: nowrap;
       left: 0; right: 0;
       color: gray;
-      font-size: 80%;
     }
   `
 

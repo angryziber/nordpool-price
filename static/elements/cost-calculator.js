@@ -45,6 +45,7 @@ customElements.define('cost-calculator', class extends BaseElement {
     :host {
       display: block;
       width: 66%;
+      max-width: 1000px;
       margin: 0 auto;
       background: #eee;
       border: 1px solid lightgrey;
