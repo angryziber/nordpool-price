@@ -1,7 +1,7 @@
 import countries from './countries.js'
-import {LitElement, html, css} from './deps/lit-element.js'
+import {BaseElement, html, css} from './deps/element.js'
 
-customElements.define('country-select', class extends LitElement {
+customElements.define('country-select', class extends BaseElement {
   static properties = {
     country: {}
   }

@@ -1,6 +1,6 @@
-import {LitElement, html, css} from './deps/lit-element.js'
+import {BaseElement, html, css} from './deps/element.js'
 
-customElements.define('price-card', class extends LitElement {
+customElements.define('price-card', class extends BaseElement {
   static properties = {
     price: {},
     trend: {}

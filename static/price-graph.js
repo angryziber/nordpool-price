@@ -1,7 +1,7 @@
-import {LitElement, html, css} from './deps/lit-element.js'
+import {BaseElement, html, css} from './deps/element.js'
 import {toLocalHour, toPerKWh} from './formatters.js'
 
-customElements.define('price-graph', class extends LitElement {
+customElements.define('price-graph', class extends BaseElement {
   static properties = {
     prices: {type: Array},
     hour: {type: Number},

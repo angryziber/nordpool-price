@@ -1,7 +1,7 @@
-import {LitElement, html, css} from './deps/lit-element.js'
+import {BaseElement, html, css} from './deps/element.js'
 import {toLocalHour} from './formatters.js'
 
-customElements.define('cost-calculator', class extends LitElement {
+customElements.define('cost-calculator', class extends BaseElement {
   static properties = {
     hourPrices: {type: Array},
     startHour: {type: Number},

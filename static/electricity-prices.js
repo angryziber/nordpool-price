@@ -1,4 +1,4 @@
-import {LitElement, html, css} from './deps/lit-element.js'
+import {BaseElement, html, css} from './deps/element.js'
 import {toLocalHour, toPerKWh} from './formatters.js'
 import countries from './countries.js'
 import './price-card.js'
@@ -6,7 +6,7 @@ import './price-graph.js'
 import './country-select.js'
 import './cost-calculator.js'
 
-customElements.define('electricity-prices', class extends LitElement {
+customElements.define('electricity-prices', class extends BaseElement {
   static properties = {
     country: {},
     dayPrices: {attribute: false},
