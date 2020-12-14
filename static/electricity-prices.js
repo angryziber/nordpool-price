@@ -13,7 +13,7 @@ customElements.define('electricity-prices', class extends LitElement {
     day: {},
     hour: {},
     graphDay: {attribute: false},
-    calcPrice: {attribute: false}
+    calcHour: {attribute: false}
   }
 
   constructor() {
@@ -22,14 +22,13 @@ customElements.define('electricity-prices', class extends LitElement {
     const cetDate = new Date()
     cetDate.setMinutes(-this.hourDiff)
     this.day = this.graphDay = cetDate.toLocaleDateString('lt')
-    this.hour = cetDate.getHours()
+    this.hour = this.calcHour = cetDate.getHours()
     this.loadPrices()
   }
 
   async loadPrices() {
     this.dayPrices = {}
     this.dayPrices = await fetch('/api/prices?country=' + this.country).then(res => res.json())
-    this.calcPrice = this.hourPrice()
   }
 
   hourPrice(h = this.hour) {
@@ -84,11 +83,11 @@ customElements.define('electricity-prices', class extends LitElement {
     </div>
     
     <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} 
-                 hourDiff=${this.hourDiff} @selected=${e => this.calcPrice = e.detail}/>
+                 hourDiff=${this.hourDiff} @selected=${e => this.calcHour = e.detail}/>
     <select @input=${e => this.graphDay = e.target.value} style="margin-top: 1.5em">
       ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day}>${day}</option>`)}
     </select>
     
-    <cost-calculator price=${this.calcPrice} style="margin-top: 1.5em"/>
+    <cost-calculator .hourPrices=${this.dayPrices[this.graphDay]} startHour=${this.calcHour} style="margin-top: 1.5em"/>
   `
 })

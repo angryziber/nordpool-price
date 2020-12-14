@@ -2,7 +2,8 @@ import {LitElement, html, css} from './deps/lit-element.js'
 
 customElements.define('cost-calculator', class extends LitElement {
   static properties = {
-    price: {type: Number},
+    hourPrices: {type: Array},
+    startHour: {type: Number},
     gridPrice: {type: Number},
     taxPercent: {type: Number},
     kW: {type: Number},
@@ -21,6 +22,15 @@ customElements.define('cost-calculator', class extends LitElement {
   selectPredefined(i) {
     this.kW = predefined[i].kW
     this.hours = predefined[i].h
+  }
+
+  calc() {
+    let cents = 0
+    for (let i = 0; i < this.hours; i++) {
+      const hourPrice = this.hourPrices[(this.startHour + i) % this.hourPrices.length] / 10
+      cents += this.kW * (hourPrice + this.gridPrice)
+    }
+    return cents * (1 + this.taxPercent / 100) / 100
   }
 
   static styles = css`
@@ -59,7 +69,7 @@ customElements.define('cost-calculator', class extends LitElement {
     <span class="field">
       <input type="number" .value=${this.hours} @input=${e => this.hours = e.target.value}> h
     </span>
-    = <strong>${(this.kW * this.hours * (this.price + this.gridPrice) * (1 + this.taxPercent / 100) / 100).toFixed(2)} €</strong>
+    = <strong>${this.calc().toFixed(2)} €</strong>
 
     <div style="margin-top: 1em">
       <button @click=${() => this.detailsOpen = !this.detailsOpen}>More ${this.detailsOpen ? '▴' : '▾'}</button>
