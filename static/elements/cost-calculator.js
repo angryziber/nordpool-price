@@ -1,4 +1,4 @@
-import {BaseElement, html, css} from './deps/element.js'
+import {BaseElement, html, css} from '../deps/element.js'
 import {toLocalHour} from './formatters.js'
 
 customElements.define('cost-calculator', class extends BaseElement {
@@ -81,6 +81,7 @@ customElements.define('cost-calculator', class extends BaseElement {
       start at ${toLocalHour(this.startHour, this.hourDiff)} for
       <input type="number" .value=${this.hours} @input=${e => this.hours = e.target.value}> h
     </span>
+    
     = <strong class="cost">${this.calc().toFixed(2)} €</strong>
 
     <div style="margin-top: 1em">

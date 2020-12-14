@@ -1,6 +1,6 @@
-import {BaseElement, html, css} from './deps/element.js'
+import {BaseElement, html, css} from '../deps/element.js'
 import {toLocalHour, toPerKWh} from './formatters.js'
-import countries from './countries.js'
+import countries from '../countries.js'
 import './price-card.js'
 import './price-graph.js'
 import './country-select.js'

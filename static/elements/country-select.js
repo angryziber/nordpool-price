@@ -1,5 +1,5 @@
-import countries from './countries.js'
-import {BaseElement, html, css} from './deps/element.js'
+import countries from '../countries.js'
+import {BaseElement, html, css} from '../deps/element.js'
 
 customElements.define('country-select', class extends BaseElement {
   static properties = {

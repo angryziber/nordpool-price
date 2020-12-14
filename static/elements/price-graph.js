@@ -1,4 +1,4 @@
-import {BaseElement, html, css} from './deps/element.js'
+import {BaseElement, html, css} from '../deps/element.js'
 import {toLocalHour, toPerKWh} from './formatters.js'
 
 customElements.define('price-graph', class extends BaseElement {
