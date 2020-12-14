@@ -23,7 +23,6 @@ customElements.define('electricity-prices', class extends BaseElement {
     cetDate.setMinutes(-this.hourDiff * 60)
     this.day = this.graphDay = cetDate.toLocaleDateString('lt')
     this.hour = this.calcHour = cetDate.getHours()
-    this.loadPrices()
   }
 
   async loadPrices() {
