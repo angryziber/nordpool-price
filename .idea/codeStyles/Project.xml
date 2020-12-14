@@ -6,6 +6,13 @@
       <option name="USE_EXPLICIT_JS_EXTENSION" value="TRUE" />
       <option name="USE_PATH_MAPPING" value="NEVER" />
     </JSCodeStyleSettings>
+    <codeStyleSettings language="CSS">
+      <indentOptions>
+        <option name="INDENT_SIZE" value="2" />
+        <option name="CONTINUATION_INDENT_SIZE" value="2" />
+        <option name="TAB_SIZE" value="2" />
+      </indentOptions>
+    </codeStyleSettings>
     <codeStyleSettings language="HTML">
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />

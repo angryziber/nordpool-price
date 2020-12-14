@@ -15,6 +15,7 @@ customElements.define('cost-calculator', class extends LitElement {
 
   static styles = css`
     input {
+      margin-left: 1em;
       width: 4em;
     }
   `

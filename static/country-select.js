@@ -8,7 +8,6 @@ customElements.define('country-select', class extends LitElement {
 
   static styles = css`
     select {
-      font-size: 100%;
       font-weight: bold;
     }
   `
