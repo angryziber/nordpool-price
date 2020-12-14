@@ -9,7 +9,8 @@ customElements.define('price-card', class extends BaseElement {
   static styles = css`
     h1 {
       text-align: center;
-      padding: 0.5em 1em;
+      width: 5em;
+      padding: 0.5em 0;
       margin: 0 0.3em;
       box-shadow: 1px 1px 10px rgba(0,0,0,0.3);
     }
