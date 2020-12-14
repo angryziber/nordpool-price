@@ -89,8 +89,6 @@ customElements.define('electricity-prices', class extends LitElement {
       ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day}>${day}</option>`)}
     </select>
     
-    <div style="margin-top: 2em">
-      <cost-calculator price=${this.calcPrice}/>
-    </div>
+    <cost-calculator price=${this.calcPrice} style="margin-top: 1.5em"/>
   `
 })

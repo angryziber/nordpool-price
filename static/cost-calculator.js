@@ -24,12 +24,28 @@ customElements.define('cost-calculator', class extends LitElement {
   }
 
   static styles = css`
+    :host {
+      display: block;
+      width: 66%;
+      margin: 0 auto;
+      background: #eee;
+      border: 1px solid lightgrey;
+      padding: 1em;
+    }
+
     input {
       width: 4em;
     }
     
     .field {
       margin-left: 1em;
+    }
+    
+    @media screen and (max-width: 500px) {
+      .field {
+        display: block;
+        margin: 0.5em 0;
+      }
     }
   `
 
@@ -45,10 +61,10 @@ customElements.define('cost-calculator', class extends LitElement {
     </span>
     = <strong>${(this.kW * this.hours * (this.price + this.gridPrice) * (1 + this.taxPercent / 100) / 100).toFixed(2)} €</strong>
 
-    <div style="margin: 1em 0">
+    <div style="margin-top: 1em">
       <button @click=${() => this.detailsOpen = !this.detailsOpen}>More ${this.detailsOpen ? '▴' : '▾'}</button>
     </div>
-    <div style="display: ${this.detailsOpen ? 'block' : 'none'}">
+    <div style="margin-top: 1em; display: ${this.detailsOpen ? 'block' : 'none'}">
       <span class="field">
         Grid price <input type="number" .value=${this.gridPrice} @input=${e => this.gridPrice = e.target.value}> cents/kWh
       </span>
