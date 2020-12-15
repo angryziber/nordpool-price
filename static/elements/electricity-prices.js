@@ -88,7 +88,7 @@ customElements.define('electricity-prices', class extends BaseElement {
       ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day}>${day}</option>`)}
     </select>
     
-    <cost-calculator .hourPrices=${this.dayPrices[this.graphDay]} startHour=${this.calcHour} hourDiff=${this.hourDiff} style="margin-top: 1.5em"></cost-calculator>
+    <cost-calculator .hourPrices=${this.dayPrices[this.graphDay]} startHour=${this.calcHour} hourDiff=${this.hourDiff} style="margin-top: 1.5em"/>
       
     <p>
       <a class="muted" target="_blank" href="https://www.nordpoolgroup.com/Market-data1/Dayahead/Area-Prices/${this.country}/Hourly/">Data source</a>
