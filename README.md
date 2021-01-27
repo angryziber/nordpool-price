@@ -2,7 +2,7 @@
 
 Fetches electricity prices from NordPool exchange and displays the current price for the Baltic countries in their correct time zone.
 
-[Deployed here](https://nordpoolprices.codeborne.com/)
+[Deployed here](https://nordpoolprice.codeborne.com/)
 
 Useful if your electricity bill is tied to the exchange spot price, so you can decide when to charge your electric car, etc.
 
