@@ -19,3 +19,8 @@ Client side does not require any build steps:
 * Dependencies loaded using [Skypack](https://skypack.dev)
 
 Use `npm start` to run locally.
+
+## TODO
+
+* Show days of week
+* Offer to install to home screen as an app
