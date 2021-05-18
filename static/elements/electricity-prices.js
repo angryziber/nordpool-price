@@ -85,7 +85,7 @@ customElements.define('electricity-prices', class extends BaseElement {
     <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} 
                  hourDiff=${this.hourDiff} @selected=${e => this.calcHour = e.detail}/>
     <select @input=${e => this.graphDay = e.target.value} style="margin-top: 1.5em">
-      ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day}>${day}</option>`)}
+      ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day} value="${day}">${day} ${this.dayOfWeek(day)}</option>`)}
     </select>
     
     <cost-calculator .hourPrices=${this.dayPrices[this.graphDay]} startHour=${this.calcHour} hourDiff=${this.hourDiff} style="margin-top: 1.5em"/>
@@ -94,4 +94,9 @@ customElements.define('electricity-prices', class extends BaseElement {
       <a class="muted" target="_blank" href="https://www.nordpoolgroup.com/Market-data1/Dayahead/Area-Prices/${this.country}/Hourly/">Data source</a>
     </p>  
   `
+
+  dayOfWeek(date) {
+    const n = new Date(date).getDay()
+    return ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][n]
+  }
 })

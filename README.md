@@ -22,5 +22,4 @@ Use `npm start` to run locally.
 
 ## TODO
 
-* Show days of week
 * Offer to install to home screen as an app
