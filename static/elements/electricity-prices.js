@@ -31,16 +31,17 @@ customElements.define('electricity-prices', class extends BaseElement {
   }
 
   hourPrice(h = this.hour) {
+    const ps = this.dayPrices
     let d = this.day
     if (h > 23) {
-      d = Object.keys(this.dayPrices)[0]
+      d = Object.keys(ps)[0]
       h -= 24
     }
     else if (h < 0) {
-      d = Object.keys(this.dayPrices)[1]
+      d = Object.keys(ps)[1]
       h += 24
     }
-    return toPerKWh(this.dayPrices[d]?.[h])
+    return toPerKWh(ps[d] && ps[d][h])
   }
 
   changeCountry(country) {
