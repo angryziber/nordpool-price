@@ -15,9 +15,10 @@ customElements.define('cost-calculator', class extends BaseElement {
 
   constructor() {
     super()
-    this.gridPrice = 5
-    this.taxPercent = 20
-    this.selectPredefined(navigator.userAgent.includes('Tesla') ? 3 : 0)
+    this.gridPrice = localStorage['gridPrice'] || 5
+    this.taxPercent = localStorage['taxPercent'] || 20
+    this.kW = localStorage['kW'] || 1
+    this.hours = localStorage['hours'] || 1
     this.detailsOpen = false
   }
 
@@ -39,6 +40,10 @@ customElements.define('cost-calculator', class extends BaseElement {
     const $cost = this.shadowRoot.querySelector('.cost')
     $cost.classList.add('updated')
     setTimeout(() => $cost.classList.remove('updated'), 500)
+    localStorage['kW'] = this.kW
+    localStorage['hours'] = this.hours
+    localStorage['gridPrice'] = this.gridPrice
+    localStorage['taxPercent'] = this.taxPercent
   }
 
   static styles = css`
@@ -100,9 +105,11 @@ customElements.define('cost-calculator', class extends BaseElement {
 })
 
 const predefined = [
+  {name: 'Custom', kW: 1, h: 1},
   {name: 'Sauna', kW: 9, h: 3},
   {name: 'Heater', kW: 2.5, h: 8},
   {name: 'Nissan Leaf', kW: 3.3, h: 7.5},
   {name: 'Tesla Model 3', kW: 11, h: 5},
-  {name: '100W light', kW: 0.1, h: 24}
+  {name: '100W light', kW: 0.1, h: 24},
+  {name: 'Reference', kW: 1, h: 1}
 ]
