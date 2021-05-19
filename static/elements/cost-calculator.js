@@ -17,7 +17,7 @@ customElements.define('cost-calculator', class extends BaseElement {
     super()
     this.gridPrice = 5
     this.taxPercent = 20
-    this.selectPredefined(0)
+    this.selectPredefined(navigator.userAgent.includes('Tesla') ? 3 : 0)
     this.detailsOpen = false
   }
 
