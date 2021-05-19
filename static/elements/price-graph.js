@@ -67,7 +67,7 @@ customElements.define('price-graph', class extends BaseElement {
 
   render = () => html`
     <ul class="day-prices">
-      ${(this.prices ?? Array(24).fill(0)).map((p, h) => html`
+      ${(this.prices || Array(24).fill(0)).map((p, h) => html`
         <li class="${h === this.hour ? 'now' : ''}" @click=${() => this.selected(h)} style="cursor: pointer">
           <div class="bar" style="height: ${p}px"></div>
           <div class="price">${toPerKWh(p)}</div>

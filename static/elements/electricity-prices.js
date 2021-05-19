@@ -18,7 +18,7 @@ customElements.define('electricity-prices', class extends BaseElement {
 
   constructor() {
     super()
-    this.changeCountry(localStorage.getItem('country') ?? 'EE')
+    this.changeCountry(localStorage.getItem('country') || 'EE')
     const cetDate = new Date()
     cetDate.setMinutes(-this.hourDiff * 60)
     this.day = this.graphDay = cetDate.toLocaleDateString('lt')
