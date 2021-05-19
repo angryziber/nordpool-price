@@ -69,11 +69,6 @@ customElements.define('electricity-prices', class extends BaseElement {
     .row .prev, .row .next {
       opacity: 0.3;
     }
-            
-    .muted {
-      color: gray;
-      font-size: 80%;
-    }
   `
 
   render = () => html`
@@ -98,10 +93,6 @@ customElements.define('electricity-prices', class extends BaseElement {
     <button @click=${() => this.nextDay(-1)}>&raquo;</button>
     
     <cost-calculator .hourPrices=${this.dayPrices[this.graphDay] || []} startHour=${this.calcHour} hourDiff=${this.hourDiff} style="margin-top: 1.5em"/>
-      
-    <p>
-      <a class="muted" target="_blank" href="https://www.nordpoolgroup.com/Market-data1/Dayahead/Area-Prices/${this.country}/Hourly/">Data source</a>
-    </p>  
   `
 
   dayOfWeek(date) {

@@ -4,3 +4,8 @@ body {
   background: white;
   margin: 0;
 }
+
+.muted {
+  color: gray;
+  font-size: 80%;
+}
