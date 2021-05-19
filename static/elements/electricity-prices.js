@@ -51,6 +51,12 @@ customElements.define('electricity-prices', class extends BaseElement {
     localStorage.setItem('country', country)
   }
 
+  nextDay(n) {
+    const days = Object.keys(this.dayPrices)
+    const i = days.indexOf(this.graphDay)
+    this.graphDay = i >= 0 && days[i + n] || this.graphDay
+  }
+
   static styles = css`
     .row {
       display: flex;
@@ -67,7 +73,7 @@ customElements.define('electricity-prices', class extends BaseElement {
     .muted {
       color: gray;
       font-size: 80%;
-    }    
+    }
   `
 
   render = () => html`
@@ -85,9 +91,11 @@ customElements.define('electricity-prices', class extends BaseElement {
     
     <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} 
                  hourDiff=${this.hourDiff} @selected=${e => this.calcHour = e.detail}/>
+    <button @click=${() => this.nextDay(1)}>&laquo;</button>  
     <select @input=${e => this.graphDay = e.target.value} style="margin-top: 1.5em">
       ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day} value="${day}">${day} ${this.dayOfWeek(day)}</option>`)}
     </select>
+    <button @click=${() => this.nextDay(-1)}>&raquo;</button>
     
     <cost-calculator .hourPrices=${this.dayPrices[this.graphDay]} startHour=${this.calcHour} hourDiff=${this.hourDiff} style="margin-top: 1.5em"/>
       
