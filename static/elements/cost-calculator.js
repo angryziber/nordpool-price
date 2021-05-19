@@ -15,10 +15,10 @@ customElements.define('cost-calculator', class extends BaseElement {
 
   constructor() {
     super()
-    this.gridPrice = localStorage['gridPrice'] || 5
-    this.taxPercent = localStorage['taxPercent'] || 20
-    this.kW = localStorage['kW'] || 1
-    this.hours = localStorage['hours'] || 1
+    this.gridPrice = +localStorage['gridPrice'] || 5
+    this.taxPercent = +localStorage['taxPercent'] || 20
+    this.kW = +localStorage['kW'] || 1
+    this.hours = +localStorage['hours'] || 1
     this.detailsOpen = false
   }
 
