@@ -17,9 +17,10 @@ customElements.define('cost-calculator', class extends BaseElement {
     super()
     this.gridPrice = +localStorage['gridPrice'] || 5
     this.taxPercent = +localStorage['taxPercent'] || 20
-    this.kW = +localStorage['kW'] || 1
-    this.hours = +localStorage['hours'] || 1
     this.detailsOpen = false
+    this.predefined = predefined[navigator.userAgent.includes('Tesla') ? 4 : 0]
+    this.kW = +localStorage['kW'] || this.predefined.kW
+    this.hours = +localStorage['hours'] || this.predefined.h
   }
 
   selectPredefined(i) {
@@ -78,7 +79,7 @@ customElements.define('cost-calculator', class extends BaseElement {
 
   render = () => html`
     <select @input=${e => this.selectPredefined(e.target.selectedIndex)}>
-      ${predefined.map(p => html`<option>${p.name}</option>`)}
+      ${predefined.map(p => html`<option ?selected=${p === this.predefined}>${p.name}</option>`)}
     </select>
     <span class="field">
       <input type="number" .value=${this.kW} @input=${e => this.kW = e.target.value}> kW
