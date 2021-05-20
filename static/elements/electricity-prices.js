@@ -68,6 +68,11 @@ customElements.define('electricity-prices', class extends BaseElement {
     .row .prev, .row .next {
       opacity: 0.3;
     }
+    
+    button {
+      padding-left: 0.5em;
+      padding-right: 0.5em;
+    }
   `
 
   render = () => html`
