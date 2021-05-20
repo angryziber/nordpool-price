@@ -19,8 +19,7 @@ customElements.define('electricity-prices', class extends BaseElement {
   constructor() {
     super()
     this.changeCountry(localStorage.getItem('country') || 'EE')
-    const cetDate = new Date()
-    cetDate.setMinutes(-this.hourDiff * 60)
+    const cetDate = this.toCET(new Date())
     this.day = this.graphDay = cetDate.toLocaleDateString('lt')
     this.hour = this.calcHour = cetDate.getHours()
   }
@@ -95,8 +94,13 @@ customElements.define('electricity-prices', class extends BaseElement {
     <cost-calculator .hourPrices=${this.dayPrices[this.graphDay] || []} startHour=${this.calcHour} hourDiff=${this.hourDiff} style="margin-top: 1.5em"/>
   `
 
+  toCET(d) {
+    d.setMinutes(d.getTimezoneOffset() + (this.hourDiff + 1) * 60)
+    return d
+  }
+
   dayOfWeek(date) {
-    const n = new Date(date).getDay()
-    return ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][n]
+    const d = this.toCET(new Date(date))
+    return ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][d.getDay()]
   }
 })
