@@ -53,8 +53,8 @@ customElements.define('cost-calculator', class extends BaseElement {
       width: 66%;
       max-width: 600px;
       margin: 0 auto;
-      background: #eee;
-      border: 1px solid lightgrey;
+      background: var(--mid-color);
+      border: 1px solid lightgray;
       padding: 1em;
     }
 

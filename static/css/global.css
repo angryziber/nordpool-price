@@ -1,11 +1,23 @@
 body {
+  --bg-color: white;
+  --fg-color: black;
+  --mid-color: #eee;
   font-family: sans-serif;
   text-align: center;
-  background: white;
   margin: 0;
+  background: var(--bg-color);
+  color: var(--fg-color);
 }
 
 .muted {
   color: gray;
   font-size: 80%;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    --bg-color: black;
+    --fg-color: white;
+    --mid-color: #444;
+  }
 }
