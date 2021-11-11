@@ -100,8 +100,7 @@ customElements.define('electricity-prices', class extends BaseElement {
   `
 
   toCET(d) {
-    d.setMinutes(d.getTimezoneOffset() + (this.hourDiff + 1) * 60)
-    return d
+    return new Date(d.toLocaleString('en-US', {timeZone: 'Europe/Stockholm'}))
   }
 
   dayOfWeek(date) {
