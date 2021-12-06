@@ -69,9 +69,8 @@ customElements.define('electricity-prices', class extends BaseElement {
       opacity: 0.3;
     }
     
-    button {
-      padding-left: 0.5em;
-      padding-right: 0.5em;
+    button, select {
+      padding: 0.5rem 1rem;
     }
   `
 

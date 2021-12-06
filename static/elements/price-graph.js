@@ -26,7 +26,7 @@ customElements.define('price-graph', class extends BaseElement {
       display: flex;
       justify-content: space-between;
       list-style: none;
-      height: 150px;
+      height: 40vh;
       font-size: 80%;
     }
     
