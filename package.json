@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "~18"
+  },
   "scripts": {
     "start": "node api",
     "test": "node test/*.test.js test/*/*.test.js"
