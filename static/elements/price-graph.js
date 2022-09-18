@@ -32,7 +32,7 @@ customElements.define('price-graph', class extends BaseElement {
       display: flex;
       justify-content: space-between;
       list-style: none;
-      height: 35vh;
+      height: 40vh;
       min-height: 200px;
       font-size: 80%;
     }
@@ -76,7 +76,7 @@ customElements.define('price-graph', class extends BaseElement {
     <ul class="day-prices">
       ${(this.prices || Array(24).fill(0)).map((p, h) => html`
         <li class="${h === this.hour ? 'now' : ''}" @click=${() => this.selected(h)} style="cursor: pointer">
-          <div class="bar" style="height: ${p}px"></div>
+          <div class="bar" style="height: ${toFullKwhPrice(p, this.taxPercent, this.gridPrice, this.finalPrices) * 10}px"></div>
           <div class="price">${toFullKwhPrice(p, this.taxPercent, this.gridPrice, this.finalPrices).toFixed(1)}</div>
           <div class="hour">${toLocalHour(h, this.hourDiff)}</div>
         </li>
