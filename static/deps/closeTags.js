@@ -5,7 +5,7 @@ export function closeTags(strings) {
     if (tagName && hasEnd)
       part = part.replace(/^([^<]*?)\/>/, '$1></' + tagName + '>')
     if (!tagName || hasEnd || part.indexOf('</') >= 0)
-      tagName = (part.match(/<([^ >]+)[^>]*?$/) || [])[1]
+      tagName = part.match(/<([^ >]+)[^>]*?$/)?.[1]
     return part
   })
 }
