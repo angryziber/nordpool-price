@@ -13,12 +13,14 @@ customElements.define('electricity-prices', class extends BaseElement {
     day: {},
     hour: {},
     graphDay: {attribute: false},
-    calcHour: {attribute: false}
+    calcHour: {attribute: false},
+    finalPrices: {attribute: false, type: Boolean}
   }
 
   constructor() {
     super()
     this.changeCountry(localStorage.getItem('country') || 'EE')
+    this.finalPrices = true
     this.taxPercent = +localStorage['taxPercent'] || 20
     this.gridPrice = +localStorage['gridPrice'] || 5
     const cetDate = this.toCET(new Date())
@@ -42,7 +44,7 @@ customElements.define('electricity-prices', class extends BaseElement {
       d = Object.keys(ps)[1]
       h += 24
     }
-    return toFullKwhPrice(ps[d] && ps[d][h], this.taxPercent, this.gridPrice).toFixed(1)
+    return toFullKwhPrice(ps[d] && ps[d][h], this.taxPercent, this.gridPrice, this.finalPrices).toFixed(1)
   }
 
   changeCountry(country) {
@@ -81,7 +83,10 @@ customElements.define('electricity-prices', class extends BaseElement {
       NordPool
       <country-select country=${this.country} @input=${e => this.changeCountry(e.path[0].value)}/>
     </h2>
-    <p class="muted">${this.day} ${toLocalHour(this.hour, this.hourDiff)}-${toLocalHour(this.hour + 1, this.hourDiff)}</p>
+    <p class="muted">
+      ${this.day} ${toLocalHour(this.hour, this.hourDiff)}-${toLocalHour(this.hour + 1, this.hourDiff)}
+      <label><input type="checkbox" checked=${this.finalPrices} @change=${e => this.finalPrices = e.target.checked}> Final prices</label>
+    </p>
     
     <div class="row">
       <price-card price=${this.hourPrice(this.hour - 1)} class="prev"/>
@@ -91,7 +96,7 @@ customElements.define('electricity-prices', class extends BaseElement {
     
     <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} 
                  hourDiff=${this.hourDiff} @selected=${e => this.calcHour = e.detail} 
-                 .taxPercent=${this.taxPercent} .gridPrice=${this.gridPrice}/>
+                 .taxPercent=${this.taxPercent} .gridPrice=${this.gridPrice} .finalPrices=${this.finalPrices}/>
     <button @click=${() => this.nextDay(1)}>&laquo;</button>  
     <select @input=${e => this.graphDay = e.target.value} style="margin-top: 1.5em">
       ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day} value="${day}">${day} ${this.dayOfWeek(day)}</option>`)}
@@ -99,7 +104,7 @@ customElements.define('electricity-prices', class extends BaseElement {
     <button @click=${() => this.nextDay(-1)}>&raquo;</button>
     
     <cost-calculator .hourPrices=${this.dayPrices[this.graphDay] || []} startHour=${this.calcHour} hourDiff=${this.hourDiff}
-                     .taxPercent=${this.taxPercent} .gridPrice=${this.gridPrice}
+                     .taxPercent=${this.taxPercent} .gridPrice=${this.gridPrice} .finalPrices=${this.finalPrices}
                      style="margin-top: 1.5em"/>
   `
 

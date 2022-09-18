@@ -7,7 +7,8 @@ customElements.define('price-graph', class extends BaseElement {
     hour: {type: Number},
     hourDiff: {type: Number},
     taxPercent: {type: Number},
-    gridPrice: {type: Number}
+    gridPrice: {type: Number},
+    finalPrices: {type: Boolean}
   }
 
   constructor() {
@@ -16,6 +17,7 @@ customElements.define('price-graph', class extends BaseElement {
     this.hourDiff = 0
     this.taxPercent = 0
     this.gridPrice = 0
+    this.finalPrices = true
   }
 
   selected(h) {
@@ -75,7 +77,7 @@ customElements.define('price-graph', class extends BaseElement {
       ${(this.prices || Array(24).fill(0)).map((p, h) => html`
         <li class="${h === this.hour ? 'now' : ''}" @click=${() => this.selected(h)} style="cursor: pointer">
           <div class="bar" style="height: ${p}px"></div>
-          <div class="price">${toFullKwhPrice(p, this.taxPercent, this.gridPrice).toFixed(1)}</div>
+          <div class="price">${toFullKwhPrice(p, this.taxPercent, this.gridPrice, this.finalPrices).toFixed(1)}</div>
           <div class="hour">${toLocalHour(h, this.hourDiff)}</div>
         </li>
       `)}
