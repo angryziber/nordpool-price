@@ -1,5 +1,5 @@
-import {BaseElement, html, css} from '../deps/element.js'
-import {toFullKwhPrice, toLocalHour, toPerKWh} from './formatters.js'
+import {BaseElement, css, html} from '../deps/element.js'
+import {toFullKwhPrice, toLocalHour} from './formatters.js'
 import countries from '../countries.js'
 import './price-card.js'
 import './price-graph.js'
@@ -14,6 +14,8 @@ customElements.define('electricity-prices', class extends BaseElement {
     hour: {},
     graphDay: {attribute: false},
     calcHour: {attribute: false},
+    gridPrice: {type: Number},
+    taxPercent: {type: Number},
     finalPrices: {attribute: false, type: Boolean}
   }
 
@@ -85,7 +87,7 @@ customElements.define('electricity-prices', class extends BaseElement {
     </h2>
     <p class="muted">
       ${this.day} ${toLocalHour(this.hour, this.hourDiff)}-${toLocalHour(this.hour + 1, this.hourDiff)}
-      <label><input type="checkbox" checked=${this.finalPrices} @change=${e => this.finalPrices = e.target.checked}> Final prices</label>
+      <label><input type="checkbox" ?checked=${this.finalPrices} @change=${e => this.finalPrices = e.target.checked}> Final prices</label>
     </p>
     
     <div class="row">
@@ -105,6 +107,7 @@ customElements.define('electricity-prices', class extends BaseElement {
     
     <cost-calculator .hourPrices=${this.dayPrices[this.graphDay] || []} startHour=${this.calcHour} hourDiff=${this.hourDiff}
                      .taxPercent=${this.taxPercent} .gridPrice=${this.gridPrice} .finalPrices=${this.finalPrices}
+                     @changed=${e => {this.taxPercent = e.detail.taxPercent; this.gridPrice = e.detail.gridPrice}}
                      style="margin-top: 1.5em"/>
   `
 

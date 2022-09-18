@@ -47,6 +47,7 @@ customElements.define('cost-calculator', class extends BaseElement {
     localStorage['hours'] = this.hours
     localStorage['gridPrice'] = this.gridPrice
     localStorage['taxPercent'] = this.taxPercent
+    this.dispatchEvent(new CustomEvent('changed', {detail: {gridPrice: this.gridPrice, taxPercent: this.taxPercent}}))
   }
 
   static styles = css`
@@ -84,11 +85,11 @@ customElements.define('cost-calculator', class extends BaseElement {
       ${predefined.map(p => html`<option ?selected=${p === this.predefined}>${p.name}</option>`)}
     </select>
     <span class="field">
-      <input type="number" .value=${this.kW} @input=${e => this.kW = e.target.value}> kW
+      <input type="number" .value=${this.kW} @input=${e => this.kW = +e.target.value}> kW
     </span>
     <span class="field">
       start at ${toLocalHour(this.startHour, this.hourDiff)} for
-      <input type="number" .value=${this.hours} @input=${e => this.hours = e.target.value}> h
+      <input type="number" .value=${this.hours} @input=${e => this.hours = +e.target.value}> h
     </span>
     
     = <strong class="cost">${this.calc().toFixed(2)} €</strong>
@@ -98,10 +99,10 @@ customElements.define('cost-calculator', class extends BaseElement {
     </div>
     <div style="margin-top: 1em; display: ${this.detailsOpen ? 'block' : 'none'}">
       <span class="field">
-        Grid price <input type="number" .value=${this.gridPrice} @input=${e => this.gridPrice = e.target.value}> cents/kWh
+        Grid price <input type="number" .value=${this.gridPrice} @input=${e => this.gridPrice = +e.target.value}> cents/kWh
       </span>
       <span class="field">
-        Tax <input type="number" .value=${this.taxPercent} @input=${e => this.taxPercent = e.target.value}> %
+        Tax <input type="number" .value=${this.taxPercent} @input=${e => this.taxPercent = +e.target.value}> %
       </span>
     </div>
   `
