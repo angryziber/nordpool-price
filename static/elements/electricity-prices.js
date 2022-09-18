@@ -1,5 +1,5 @@
 import {BaseElement, html, css} from '../deps/element.js'
-import {toLocalHour, toPerKWh} from './formatters.js'
+import {toFullKwhPrice, toLocalHour, toPerKWh} from './formatters.js'
 import countries from '../countries.js'
 import './price-card.js'
 import './price-graph.js'
@@ -20,6 +20,7 @@ customElements.define('electricity-prices', class extends BaseElement {
     super()
     this.changeCountry(localStorage.getItem('country') || 'EE')
     this.taxPercent = +localStorage['taxPercent'] || 20
+    this.gridPrice = +localStorage['gridPrice'] || 5
     const cetDate = this.toCET(new Date())
     this.day = this.graphDay = cetDate.toLocaleDateString('lt')
     this.hour = this.calcHour = cetDate.getHours()
@@ -41,7 +42,7 @@ customElements.define('electricity-prices', class extends BaseElement {
       d = Object.keys(ps)[1]
       h += 24
     }
-    return toPerKWh(ps[d] && ps[d][h])
+    return toFullKwhPrice(ps[d] && ps[d][h], this.taxPercent, this.gridPrice).toFixed(1)
   }
 
   changeCountry(country) {
@@ -90,14 +91,16 @@ customElements.define('electricity-prices', class extends BaseElement {
     
     <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} 
                  hourDiff=${this.hourDiff} @selected=${e => this.calcHour = e.detail} 
-                 .taxPercent=${this.taxPercent}/>
+                 .taxPercent=${this.taxPercent} .gridPrice=${this.gridPrice}/>
     <button @click=${() => this.nextDay(1)}>&laquo;</button>  
     <select @input=${e => this.graphDay = e.target.value} style="margin-top: 1.5em">
       ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day} value="${day}">${day} ${this.dayOfWeek(day)}</option>`)}
     </select>
     <button @click=${() => this.nextDay(-1)}>&raquo;</button>
     
-    <cost-calculator .hourPrices=${this.dayPrices[this.graphDay] || []} startHour=${this.calcHour} hourDiff=${this.hourDiff} style="margin-top: 1.5em"/>
+    <cost-calculator .hourPrices=${this.dayPrices[this.graphDay] || []} startHour=${this.calcHour} hourDiff=${this.hourDiff}
+                     .taxPercent=${this.taxPercent} .gridPrice=${this.gridPrice}
+                     style="margin-top: 1.5em"/>
   `
 
   toCET(d) {

@@ -1,5 +1,5 @@
 import {BaseElement, html, css} from '../deps/element.js'
-import {toLocalHour} from './formatters.js'
+import {toFullKwhPrice, toLocalHour} from './formatters.js'
 
 customElements.define('cost-calculator', class extends BaseElement {
   static properties = {
@@ -15,8 +15,8 @@ customElements.define('cost-calculator', class extends BaseElement {
 
   constructor() {
     super()
-    this.gridPrice = +localStorage['gridPrice'] || 5
-    this.taxPercent = +localStorage['taxPercent'] || 20
+    this.gridPrice = 0
+    this.taxPercent = 0
     this.detailsOpen = false
     this.predefined = predefined[navigator.userAgent.includes('Tesla') ? 4 : 0]
     this.kW = +localStorage['kW'] || this.predefined.kW
@@ -31,10 +31,10 @@ customElements.define('cost-calculator', class extends BaseElement {
   calc() {
     let cents = 0
     for (let i = 0; i < this.hours; i++) {
-      const hourPrice = this.hourPrices[(this.startHour + i) % this.hourPrices.length] / 10
-      cents += this.kW * (hourPrice + this.gridPrice)
+      const p = this.hourPrices[(this.startHour + i) % this.hourPrices.length]
+      cents += this.kW * toFullKwhPrice(p, this.taxPercent, this.gridPrice)
     }
-    return cents * (1 + this.taxPercent / 100) / 100
+    return cents / 100
   }
 
   updated() {
@@ -92,7 +92,7 @@ customElements.define('cost-calculator', class extends BaseElement {
     = <strong class="cost">${this.calc().toFixed(2)} €</strong>
 
     <div style="margin-top: 1em">
-      <button @click=${() => this.detailsOpen = !this.detailsOpen}>More ${this.detailsOpen ? '▴' : '▾'}</button>
+      <button @click=${() => this.detailsOpen = !this.detailsOpen}>Prices include tax & grid price ${this.detailsOpen ? '▴' : '▾'}</button>
     </div>
     <div style="margin-top: 1em; display: ${this.detailsOpen ? 'block' : 'none'}">
       <span class="field">
