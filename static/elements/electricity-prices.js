@@ -19,6 +19,7 @@ customElements.define('electricity-prices', class extends BaseElement {
   constructor() {
     super()
     this.changeCountry(localStorage.getItem('country') || 'EE')
+    this.taxPercent = +localStorage['taxPercent'] || 20
     const cetDate = this.toCET(new Date())
     this.day = this.graphDay = cetDate.toLocaleDateString('lt')
     this.hour = this.calcHour = cetDate.getHours()
@@ -88,7 +89,8 @@ customElements.define('electricity-prices', class extends BaseElement {
     </div>
     
     <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} 
-                 hourDiff=${this.hourDiff} @selected=${e => this.calcHour = e.detail}/>
+                 hourDiff=${this.hourDiff} @selected=${e => this.calcHour = e.detail} 
+                 .taxPercent=${this.taxPercent}/>
     <button @click=${() => this.nextDay(1)}>&laquo;</button>  
     <select @input=${e => this.graphDay = e.target.value} style="margin-top: 1.5em">
       ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day} value="${day}">${day} ${this.dayOfWeek(day)}</option>`)}
