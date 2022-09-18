@@ -59,7 +59,7 @@ customElements.define('electricity-prices', class extends BaseElement {
   nextDay(n) {
     const days = Object.keys(this.dayPrices)
     const i = days.indexOf(this.graphDay)
-    this.graphDay = i >= 0 && days[i + n] || this.graphDay
+    return i >= 0 && days[i + n] || this.graphDay
   }
 
   static styles = css`
@@ -99,13 +99,13 @@ customElements.define('electricity-prices', class extends BaseElement {
     <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} 
                  hourDiff=${this.hourDiff} @selected=${e => this.calcHour = e.detail} 
                  .taxPercent=${this.taxPercent} .gridPrice=${this.gridPrice} .finalPrices=${this.finalPrices}/>
-    <button @click=${() => this.nextDay(1)}>&laquo;</button>  
+    <button @click=${() => this.graphDay = this.nextDay(1)}>&laquo;</button>  
     <select @input=${e => this.graphDay = e.target.value} style="margin-top: 1.5em">
       ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day} value="${day}">${day} ${this.dayOfWeek(day)}</option>`)}
     </select>
-    <button @click=${() => this.nextDay(-1)}>&raquo;</button>
-    
-    <cost-calculator .hourPrices=${this.dayPrices[this.graphDay] || []} startHour=${this.calcHour} hourDiff=${this.hourDiff}
+    <button @click=${() => this.graphDay = this.nextDay(-1)}>&raquo;</button>
+      
+    <cost-calculator .hourPrices=${this.dayPrices[this.graphDay]?.concat(this.dayPrices[this.nextDay(-1)] || []) || []} startHour=${this.calcHour} hourDiff=${this.hourDiff}
                      .taxPercent=${this.taxPercent} .gridPrice=${this.gridPrice} .finalPrices=${this.finalPrices}
                      @changed=${e => {this.taxPercent = e.detail.taxPercent; this.gridPrice = e.detail.gridPrice}}
                      style="margin-top: 1.5em"/>
