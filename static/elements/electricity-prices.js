@@ -3,7 +3,6 @@ import {toFullKwhPrice, toLocalHour} from './formatters.js'
 import countries from '../countries.js'
 import './price-card.js'
 import './price-graph.js'
-import './country-select.js'
 import './cost-calculator.js'
 
 customElements.define('electricity-prices', class extends BaseElement {
@@ -83,7 +82,11 @@ customElements.define('electricity-prices', class extends BaseElement {
   render = () => html`
     <h2>
       NordPool
-      <country-select country=${this.country} @input=${e => this.changeCountry(e.path[0].value)}/>
+      <select @input=${e => this.changeCountry(e.target.value)} >
+        ${Object.keys(countries).map(code => html`
+          <option ?selected=${this.country === code} value="${code}">${code}</option>
+        `)}
+      </select>
     </h2>
     <p class="muted">
       ${this.day} ${toLocalHour(this.hour, this.hourDiff)}-${toLocalHour(this.hour + 1, this.hourDiff)}
