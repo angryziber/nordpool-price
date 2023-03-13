@@ -34,7 +34,7 @@ customElements.define('cost-calculator', class extends BaseElement {
     let cents = 0
     for (let i = 0; i < this.hours; i++) {
       const p = this.hourPrices[(this.startHour + i) % this.hourPrices.length]
-      cents += this.kW * toFullKwhPrice(p, this.taxPercent, this.gridPrice, this.finalPrices)
+      cents += this.kW * (toFullKwhPrice(p, this.taxPercent, this.finalPrices) + (this.finalPrices ? this.gridPrice : 0))
     }
     return cents / 100
   }
