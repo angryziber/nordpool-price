@@ -28,7 +28,7 @@ customElements.define('price-card', class extends BaseElement {
   render = () => html`
     <h1>
       ${this.price}${this.trend > 0 ? html`<span class="up">▲</span>` : this.trend < 0 ? html`<span class="down">▼</span>` : ''}
-      <small>cents/kWh</small>
+      <small>¢/kWh</small>
     </h1>
   `
 })

@@ -8,6 +8,7 @@ customElements.define('cost-calculator', class extends BaseElement {
     hourDiff: {type: Number},
     gridPrice: {type: Number},
     taxPercent: {type: Number},
+    comparisonPrice: {type: Number},
     finalPrices: {type: Boolean},
     kW: {attribute: false},
     hours: {attribute: false},
@@ -18,6 +19,7 @@ customElements.define('cost-calculator', class extends BaseElement {
     super()
     this.gridPrice = 0
     this.taxPercent = 0
+    this.comparisonPrice = 0
     this.finalPrices = true
     this.detailsOpen = false
     this.predefined = predefined[navigator.userAgent.includes('Tesla') ? 4 : 0]
@@ -47,7 +49,8 @@ customElements.define('cost-calculator', class extends BaseElement {
     localStorage['hours'] = this.hours
     localStorage['gridPrice'] = this.gridPrice
     localStorage['taxPercent'] = this.taxPercent
-    this.dispatchEvent(new CustomEvent('changed', {detail: {gridPrice: this.gridPrice, taxPercent: this.taxPercent}}))
+    localStorage['comparisonPrice'] = this.comparisonPrice
+    this.dispatchEvent(new CustomEvent('changed', {detail: {gridPrice: this.gridPrice, taxPercent: this.taxPercent, comparisonPrice: this.comparisonPrice}}))
   }
 
   static styles = css`
@@ -99,10 +102,13 @@ customElements.define('cost-calculator', class extends BaseElement {
     </div>
     <div style="margin-top: 1em; display: ${this.detailsOpen ? 'block' : 'none'}">
       <span class="field">
-        Grid price <input type="number" .value=${this.gridPrice} @input=${e => this.gridPrice = +e.target.value}> cents/kWh
+        Grid price <input type="number" .value=${this.gridPrice} @input=${e => this.gridPrice = +e.target.value}> ¢/kWh
       </span>
       <span class="field">
         Tax <input type="number" .value=${this.taxPercent} @input=${e => this.taxPercent = +e.target.value}> %
+      </span>
+      <span class="field">
+        Comparison <input type="number" .value=${this.comparisonPrice} @input=${e => this.comparisonPrice = +e.target.value}> ¢/kWh
       </span>
     </div>
   `
@@ -114,6 +120,7 @@ const predefined = [
   {name: 'Heater', kW: 2.5, h: 8},
   {name: 'Nissan Leaf', kW: 3.3, h: 7.5},
   {name: 'Tesla Model 3', kW: 11, h: 5},
+  {name: 'Tesla Model Y', kW: 11, h: 6.8},
   {name: '100W light', kW: 0.1, h: 24},
   {name: 'Reference', kW: 1, h: 1}
 ]
