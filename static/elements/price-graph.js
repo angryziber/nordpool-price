@@ -16,6 +16,7 @@ customElements.define('price-graph', class extends BaseElement {
     this.hourDiff = 0
     this.taxPercent = 0
     this.withTax = true
+    this.comparisonLine = 16.03 * 10
   }
 
   selected(h) {
@@ -24,6 +25,7 @@ customElements.define('price-graph', class extends BaseElement {
 
   static styles = css`
     .day-prices {
+      position: relative;
       max-width: 1000px;
       margin: 0 auto;      
       padding: 0 1em;
@@ -61,17 +63,22 @@ customElements.define('price-graph', class extends BaseElement {
       background: lightgreen;
     }
     
-    .hour {
+    .hour, .line {
       position: absolute;
       bottom: -1.5em;
       white-space: nowrap;
       left: 0; right: 0;
       color: gray;
     }
+    
+    .line {
+      border-top: 1px dashed red;
+    }
   `
 
   render = () => html`
     <ul class="day-prices">
+      <div class="line" style="height: ${toFullKwhPrice(this.comparisonLine, this.taxPercent, this.withTax) * 10}px"></div>
       ${(this.prices || Array(24).fill(0)).map((p, h) => html`
         <li class="${h === this.hour ? 'now' : ''}" @click=${() => this.selected(h)} style="cursor: pointer">
           <div class="bar" style="height: ${toFullKwhPrice(p, this.taxPercent, this.withTax) * 10}px"></div>
