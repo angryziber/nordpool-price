@@ -59,6 +59,11 @@ customElements.define('price-graph', class extends BaseElement {
       transition: height 0.4s 0.1s;
     }
     
+    .bar.negative {
+      transform-origin: bottom;
+      transform: scaleY(-1);
+    }
+    
     .now .bar {
       background: lightgreen;
     }
@@ -79,13 +84,17 @@ customElements.define('price-graph', class extends BaseElement {
   render = () => html`
     <ul class="day-prices">
       <div class="line" style="height: ${toFullKwhPrice(this.comparisonPrice * 10, this.taxPercent, this.withTax) * 10}px"></div>
-      ${(this.prices || Array(24).fill(0)).map((p, h) => html`
-        <li class="${h === this.hour ? 'now' : ''}" @click=${() => this.selected(h)} style="cursor: pointer">
-          <div class="bar" style="height: ${toFullKwhPrice(p, this.taxPercent, this.withTax) * 10}px"></div>
-          <div class="price">${toFullKwhPrice(p, this.taxPercent, this.withTax).toFixed(1)}</div>
-          <div class="hour">${toLocalHour(h, this.hourDiff)}</div>
-        </li>
-      `)}
+      ${(this.prices || Array(24).fill(0)).map((p, h) => {
+        const fullPrice = toFullKwhPrice(p, this.taxPercent, this.withTax)
+        return html`
+          <li class="${h === this.hour ? 'now' : ''}" 
+              @click=${() => this.selected(h)} style="cursor: pointer">
+            <div class="bar ${fullPrice < 0 ? 'negative' : ''}" style="height: ${fullPrice * 10}px"></div>
+            <div class="price">${fullPrice.toFixed(1)}</div>
+            <div class="hour">${toLocalHour(h, this.hourDiff)}</div>
+          </li>
+        `
+      })}
     </ul>
   `
 })
