@@ -1,6 +1,6 @@
 # NordPool Curent Price
 
-Fetches electricity prices from NordPool exchange and displays the current price for the Baltic countries in their correct time zone.
+Fetches NordPool electricity prices from Elering and displays the current price for the Baltic countries in their correct time zone.
 
 [Deployed here](https://nordpoolprice.codeborne.com/)
 

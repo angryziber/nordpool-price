@@ -1,11 +1,10 @@
-export function extractPrices(json) {
+export function extractPrices(json, country, hourOffset) {
   const days = {}
-  json.data.Rows.slice(0, 24).forEach(row => {
-    row.Columns.forEach(col => {
-      const date = col.Name.replace(/(\d{2})-(\d{2})-(\d{4})/, '$3-$2-$1')
-      if (!days[date]) days[date] = []
-      days[date].push(parseFloat(col.Value.replace(' ', '').replace(',', '.')))
-    })
+  json.data[country.toLowerCase()].forEach(p => {
+    // TODO: wintertime here, from 1am
+    const date = new Date((p.timestamp + hourOffset * 60 * 60) * 1000).toISOString().split('T')[0]
+    const day = days[date] ??= []
+    day.push(p.price)
   })
   return days
 }

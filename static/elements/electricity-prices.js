@@ -33,8 +33,9 @@ customElements.define('electricity-prices', class extends BaseElement {
   }
 
   async loadPrices() {
+    const hourOffset = new Date().getTimezoneOffset() / -60
     this.dayPrices = {}
-    this.dayPrices = await fetch('/api/prices?country=' + this.country).then(res => res.json())
+    this.dayPrices = await fetch('/api/prices?country=' + this.country + '&hourOffset=' + hourOffset).then(res => res.json())
   }
 
   hourPrice(h = this.hour) {
@@ -101,11 +102,11 @@ customElements.define('electricity-prices', class extends BaseElement {
     <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} 
                  hourDiff=${this.hourDiff} @selected=${e => this.calcHour = e.detail} 
                  .taxPercent=${this.taxPercent} .withTax=${this.withTax} .comparisonPrice=${this.comparisonPrice}/>
-    <button @click=${() => this.graphDay = this.nextDay(1)}>&laquo;</button>  
+    <button @click=${() => this.graphDay = this.nextDay(-1)}>&laquo;</button>  
     <select @input=${e => this.graphDay = e.target.value} style="margin-top: 1.5em">
-      ${Object.keys(this.dayPrices).reverse().map(day => html`<option ?selected=${this.graphDay === day} value="${day}">${day} ${this.dayOfWeek(day)}</option>`)}
+      ${Object.keys(this.dayPrices).map(day => html`<option ?selected=${this.graphDay === day} value="${day}">${day} ${this.dayOfWeek(day)}</option>`)}
     </select>
-    <button @click=${() => this.graphDay = this.nextDay(-1)}>&raquo;</button>
+    <button @click=${() => this.graphDay = this.nextDay(1)}>&raquo;</button>
       
     <cost-calculator .hourPrices=${this.dayPrices[this.graphDay]?.concat(this.dayPrices[this.nextDay(-1)] || []) || []} startHour=${this.calcHour} hourDiff=${this.hourDiff}
                      .taxPercent=${this.taxPercent} .gridPrice=${this.gridPrice} .comparisonPrice=${this.comparisonPrice} .finalPrices=${this.withTax}

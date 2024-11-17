@@ -17,16 +17,28 @@ const logger = morgan('[:date] :remote-addr :method :url :body :status :res[cont
 app.use(logger)
 
 app.get('/api/prices', async (req, res) => {
-  // https://www.nordpoolgroup.com/Market-data1/Dayahead/Area-Prices/FI/Hourly/?view=table
-  const country = countries[req.query.country ?? 'EE']
+  const country = req.query.country ?? 'EE'
+  const hourOffset = req.query.hourOffset - countries[country].hourDiff
+
+  const start = new Date()
+  start.setDate(start.getDate() - 7)
+  start.setUTCHours(-hourOffset)
+  start.setUTCMinutes(0)
+  start.setUTCSeconds(0)
+
+  const end = new Date()
+  end.setDate(end.getDate() + 2)
+  start.setUTCHours(-hourOffset)
+  start.setUTCMinutes(0)
+  start.setUTCSeconds(0)
 
   const url = {
-    host: 'www.nordpoolgroup.com',
-    path: `/api/marketdata/page/${country.pageId}?currency=,EUR,EUR,EUR` + (country.entityName ? '&entityName=' + country.entityName : '')
+    host: 'dashboard.elering.ee',
+    path: `/api/nps/price?start=${start.toISOString()}&end=${end.toISOString()}`
   }
   const r = await jsonRequest(url, res)
   res.header('cache-control', 'max-age=3600')
-  return r.statusCode === 200 ? res.json(extractPrices(JSON.parse(r.text))) : res.send(r.text)
+  return r.statusCode === 200 ? res.json(extractPrices(JSON.parse(r.text), country, hourOffset)) : res.send(r.text)
 })
 
 app.use(express.static('static'))
