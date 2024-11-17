@@ -24,8 +24,8 @@ customElements.define('electricity-prices', class extends BaseElement {
     super()
     this.changeCountry(localStorage.getItem('country') || 'EE')
     this.withTax = true
-    this.taxPercent = +localStorage['taxPercent'] || 20
-    this.gridPrice = +localStorage['gridPrice'] || 5
+    this.taxPercent = +localStorage['taxPercent'] || 23
+    this.gridPrice = +localStorage['gridPrice'] || 5.5
     this.comparisonPrice = +localStorage['comparisonPrice'] || 16.03
     const cetDate = this.toCET(new Date())
     this.day = this.graphDay = cetDate.toLocaleDateString('lt')
