@@ -1,8 +1,9 @@
-FROM node:18-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
 RUN adduser -S app
+ENV TZ=Europe/Tallinn
 
 COPY *.json ./
 RUN npm ci
