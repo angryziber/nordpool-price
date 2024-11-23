@@ -18,19 +18,17 @@ app.use(logger)
 
 app.get('/api/prices', async (req, res) => {
   const country = req.query.country ?? 'EE'
-  const hourOffset = req.query.hourOffset - countries[country].hourDiff
+  const hourDiff = countries[country].hourDiff
 
   const start = new Date()
-  start.setDate(start.getDate() - 7)
-  start.setUTCHours(-hourOffset)
-  start.setUTCMinutes(0)
-  start.setUTCSeconds(0)
+  start.setDate(start.getDate() - 10)
+  start.setHours(-hourDiff)
+  start.setMinutes(0)
+  start.setSeconds(0)
+  start.setMilliseconds(0)
 
-  const end = new Date()
-  end.setDate(end.getDate() + 2)
-  start.setUTCHours(-hourOffset)
-  start.setUTCMinutes(0)
-  start.setUTCSeconds(0)
+  const end = new Date(start)
+  end.setDate(end.getDate() + 12)
 
   const url = {
     host: 'dashboard.elering.ee',
@@ -38,7 +36,7 @@ app.get('/api/prices', async (req, res) => {
   }
   const r = await jsonRequest(url, res)
   res.header('cache-control', 'max-age=3600')
-  return r.statusCode === 200 ? res.json(extractPrices(JSON.parse(r.text), country, hourOffset)) : res.send(r.text)
+  return r.statusCode === 200 ? res.json(extractPrices(JSON.parse(r.text), country, hourDiff)) : res.send(r.text)
 })
 
 app.use(express.static('static'))

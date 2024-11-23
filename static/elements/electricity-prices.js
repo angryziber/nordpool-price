@@ -33,9 +33,8 @@ customElements.define('electricity-prices', class extends BaseElement {
   }
 
   async loadPrices() {
-    const hourOffset = new Date().getTimezoneOffset() / -60
     this.dayPrices = {}
-    this.dayPrices = await fetch('/api/prices?country=' + this.country + '&hourOffset=' + hourOffset).then(res => res.json())
+    this.dayPrices = await fetch('/api/prices?country=' + this.country).then(res => res.json())
   }
 
   hourPrice(h = this.hour) {
