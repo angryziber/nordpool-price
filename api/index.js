@@ -22,7 +22,7 @@ app.get('/api/prices', async (req, res) => {
 
   const start = new Date()
   start.setDate(start.getDate() - 10)
-  start.setHours(-hourDiff)
+  start.setHours(hourDiff)
   start.setMinutes(0)
   start.setSeconds(0)
   start.setMilliseconds(0)
