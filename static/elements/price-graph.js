@@ -1,5 +1,5 @@
 import {BaseElement, html, css} from '../deps/element.js'
-import {toFullKwhPrice, toLocalHour} from './formatters.js'
+import {toFullKwhPrice, toGridKwhPrice, toLocalHour} from './formatters.js'
 
 customElements.define('price-graph', class extends BaseElement {
   static properties = {
@@ -8,7 +8,10 @@ customElements.define('price-graph', class extends BaseElement {
     hourDiff: {type: Number},
     taxPercent: {type: Number},
     comparisonPrice: {type: Number},
-    withTax: {type: Boolean}
+    withTax: {type: Boolean},
+    gridPriceDay: {type: Number},
+    gridPriceNight: {type: Number},
+    withGrid: {type: Boolean}
   }
 
   constructor() {
@@ -85,12 +88,14 @@ customElements.define('price-graph', class extends BaseElement {
     <ul class="day-prices">
       <div class="line" style="height: ${toFullKwhPrice(this.comparisonPrice * 10, this.taxPercent, this.withTax) * 10}px"></div>
       ${(this.prices || Array(24).fill(0)).map((p, h) => {
-        const fullPrice = toFullKwhPrice(p, this.taxPercent, this.withTax)
+        const price = toFullKwhPrice(p, this.taxPercent, this.withTax)
+        const gridPrice = toGridKwhPrice(this.gridPriceDay, this.gridPriceNight, h, this.taxPercent, this.withGrid, this.withTax)
+        const total = price + gridPrice
         return html`
           <li class="${h === this.hour ? 'now' : ''}" 
               @click=${() => this.selected(h)} style="cursor: pointer">
-            <div class="bar ${fullPrice < 0 ? 'negative' : ''}" style="height: ${fullPrice * 10}px"></div>
-            <div class="price">${fullPrice.toFixed(1)}</div>
+            <div class="bar ${total < 0 ? 'negative' : ''}" style="height: ${total * 10}px"></div>
+            <div class="price">${total.toFixed(1)}</div>
             <div class="hour">${toLocalHour(h, this.hourDiff)}</div>
           </li>
         `

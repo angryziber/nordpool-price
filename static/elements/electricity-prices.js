@@ -18,13 +18,15 @@ customElements.define('electricity-prices', class extends BaseElement {
     gridPriceNight: {type: Number},
     taxPercent: {type: Number},
     comparisonPrice: {type: Number},
-    withTax: {attribute: false, type: Boolean}
+    withTax: {attribute: false, type: Boolean},
+    withGrid: {attribute: false, type: Boolean}
   }
 
   constructor() {
     super()
     this.changeCountry(localStorage.getItem('country') || 'EE')
     this.withTax = true
+    this.withGrid = false
     this.taxPercent = +localStorage['taxPercent'] || 23
     this.gridPriceDay = +localStorage['gridPriceDay'] || 7.41
     this.gridPriceNight = +localStorage['gridPriceNight'] || 4.28
@@ -51,6 +53,14 @@ customElements.define('electricity-prices', class extends BaseElement {
       h += 24
     }
     return toFullKwhPrice(ps[d]?.[h], this.taxPercent, this.withTax).toFixed(1)
+  }
+
+  gridPrice(h = this.hour) {
+    return this.withGrid ? (h >= 7 && h <= 22 ? this.gridPriceDay : this.gridPriceNight) : 0
+  }
+
+  hourPriceWithGrid(h = this.hour) {
+    return this.hourPrice(h) + this.gridPrice(h)
   }
 
   changeCountry(country) {
@@ -92,17 +102,20 @@ customElements.define('electricity-prices', class extends BaseElement {
     <p class="muted">
       ${this.day} ${toLocalHour(this.hour, this.hourDiff)}-${toLocalHour(this.hour + 1, this.hourDiff)}
       <label><input type="checkbox" ?checked=${this.withTax} @change=${e => this.withTax = e.target.checked}> With Tax</label>
+      <label><input type="checkbox" ?checked=${this.withGrid} @change=${e => this.withGrid = e.target.checked}> With Grid</label>
     </p>
     
     <div class="row">
-      <price-card price=${this.hourPrice(this.hour - 1)} class="prev"/>
-      <price-card price=${this.hourPrice()} trend=${this.hourPrice(this.hour + 1) - this.hourPrice()}/>
-      <price-card price=${this.hourPrice(this.hour + 1)} class="next"/>
+      <price-card price=${this.hourPriceWithGrid(this.hour - 1)} class="prev"/>
+      <price-card price=${this.hourPriceWithGrid()} trend=${this.hourPrice(this.hour + 1) - this.hourPrice()}/>
+      <price-card price=${this.hourPriceWithGrid(this.hour + 1)} class="next"/>
     </div>
     
     <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} 
                  hourDiff=${this.hourDiff} @selected=${e => this.calcHour = e.detail} 
-                 .taxPercent=${this.taxPercent} .withTax=${this.withTax} .comparisonPrice=${this.comparisonPrice}/>
+                 .taxPercent=${this.taxPercent} .withTax=${this.withTax} .comparisonPrice=${this.comparisonPrice}
+                 .gridPriceDay=${this.gridPriceDay} .gridPriceNight=${this.gridPriceNight} .withGrid=${this.withGrid}
+    />
     <button @click=${() => this.graphDay = this.nextDay(-1)}>&laquo;</button>  
     <select @input=${e => this.graphDay = e.target.value} style="margin-top: 1.5em">
       ${Object.keys(this.dayPrices).map(day => html`<option ?selected=${this.graphDay === day} value="${day}">${day} ${this.dayOfWeek(day)}</option>`)}

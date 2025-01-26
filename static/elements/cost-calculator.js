@@ -1,5 +1,5 @@
 import {BaseElement, html, css} from '../deps/element.js'
-import {toFullKwhPrice, toLocalHour} from './formatters.js'
+import {toFullKwhPrice, toGridKwhPrice, toLocalHour} from './formatters.js'
 
 customElements.define('cost-calculator', class extends BaseElement {
   static properties = {
@@ -38,9 +38,8 @@ customElements.define('cost-calculator', class extends BaseElement {
     let cents = 0
     for (let i = 0; i < this.hours; i++) {
       const p = this.hourPrices[(this.startHour + i) % this.hourPrices.length]
-      const isDay = this.startHour + i >= 7 && this.startHour + i <= 22
-      const gridPrice = isDay ? this.gridPriceDay : this.gridPriceNight
-      cents += this.kW * (toFullKwhPrice(p, this.taxPercent, this.finalPrices) + (this.finalPrices ? gridPrice : 0))
+      const gridPrice = toGridKwhPrice(this.gridPriceDay, this.gridPriceNight, this.startHour + i, this.taxPercent, this.finalPrices, this.finalPrices)
+      cents += this.kW * (toFullKwhPrice(p, this.taxPercent, this.finalPrices) + gridPrice)
     }
     return cents / 100
   }
