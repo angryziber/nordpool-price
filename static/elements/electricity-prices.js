@@ -52,7 +52,7 @@ customElements.define('electricity-prices', class extends BaseElement {
       d = Object.keys(ps)[1]
       h += 24
     }
-    return toFullKwhPrice(ps[d]?.[h], this.taxPercent, this.withTax).toFixed(1)
+    return toFullKwhPrice(ps[d]?.[h], this.taxPercent, this.withTax)
   }
 
   gridPrice(h = this.hour) {
@@ -60,7 +60,7 @@ customElements.define('electricity-prices', class extends BaseElement {
   }
 
   hourPriceWithGrid(h = this.hour) {
-    return this.hourPrice(h) + this.gridPrice(h)
+    return (this.hourPrice(h) + this.gridPrice(h)).toFixed(1)
   }
 
   changeCountry(country) {
