@@ -41,33 +41,48 @@ customElements.define('price-graph', class extends BaseElement {
     }
     
     li {
-      display: block;
+      display: flex;
       position: relative;
       height: 100%;
       width: 5%;
       margin: 0 0.3%;
     }
     
-    .price, .bar {
+    .price, .bars {
       position: absolute;
       bottom: 0;
       left: 0; right: 0;
       overflow: hidden;
     }
     
-    .bar {
-      background: lightblue;
+    .bars {
       z-index: -1;
-      height: 0;
-      transition: height 0.4s 0.1s;
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      height: 100%;
     }
     
-    .bar.negative {
+    .bars .electricity, .bars .grid {
+      height: 0;
+      transition: height 0.4s 0.1s;
+      width: 100%;
+    }
+    
+    .bars .electricity {
+      background: lightblue;
+    }
+
+    .bars .grid {
+      background: lightpink;
+    }
+    
+    .bars .negative {
       transform-origin: bottom;
       transform: scaleY(-1);
     }
     
-    .now .bar {
+    .now .bars .electricity {
       background: lightgreen;
     }
     
@@ -94,7 +109,10 @@ customElements.define('price-graph', class extends BaseElement {
         return html`
           <li class="${h === this.hour ? 'now' : ''}" 
               @click=${() => this.selected(h)} style="cursor: pointer">
-            <div class="bar ${total < 0 ? 'negative' : ''}" style="height: ${total * 10}px"></div>
+            <div class="bars">
+              <div class="electricity ${total < 0 ? 'negative' : ''}" style="height: ${Math.abs(price) * 10}px"></div>
+              <div class="grid" style="height: ${gridPrice * 10}px"></div>
+            </div>
             <div class="price">${total.toFixed(1)}</div>
             <div class="hour">${toLocalHour(h, this.hourDiff)}</div>
           </li>
