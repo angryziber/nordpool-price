@@ -111,7 +111,7 @@ customElements.define('electricity-prices', class extends BaseElement {
       <price-card price=${this.hourPriceWithGrid(this.hour + 1)} class="next"/>
     </div>
     
-    <price-graph .prices=${this.dayPrices[this.graphDay]} hour=${this.graphDay === this.day && this.hour} 
+    <price-graph .prices=${this.dayPrices[this.graphDay]} .dayOfWeek=${this.dayOfWeekNumber(this.graphDay)} hour=${this.graphDay === this.day && this.hour} 
                  hourDiff=${this.hourDiff} @selected=${e => this.calcHour = e.detail} 
                  .taxPercent=${this.taxPercent} .withTax=${this.withTax} .comparisonPrice=${this.comparisonPrice}
                  .gridPriceDay=${this.gridPriceDay} .gridPriceNight=${this.gridPriceNight} .withGrid=${this.withGrid}
@@ -122,7 +122,8 @@ customElements.define('electricity-prices', class extends BaseElement {
     </select>
     <button @click=${() => this.graphDay = this.nextDay(1)}>&raquo;</button>
       
-    <cost-calculator .hourPrices=${this.dayPrices[this.graphDay]?.concat(this.dayPrices[this.nextDay(-1)] || []) || []} startHour=${this.calcHour} hourDiff=${this.hourDiff}
+    <cost-calculator .hourPrices=${this.dayPrices[this.graphDay]?.concat(this.dayPrices[this.nextDay(-1)] || []) || []} 
+                      startHour=${this.calcHour} hourDiff=${this.hourDiff} .dayOfWeek=${this.dayOfWeekNumber(this.graphDay)}
                      .taxPercent=${this.taxPercent} .gridPriceDay=${this.gridPriceDay} .gridPriceNight=${this.gridPriceNight} .comparisonPrice=${this.comparisonPrice} .finalPrices=${this.withTax}
                      @changed=${e => {this.taxPercent = e.detail.taxPercent; this.gridPriceDay = e.detail.gridPriceDay; this.gridPriceNight = e.detail.gridPriceNight; this.comparisonPrice = e.detail.comparisonPrice}}
                      style="margin-top: 1.5em"/>
@@ -132,8 +133,11 @@ customElements.define('electricity-prices', class extends BaseElement {
     return new Date(d.toLocaleString('en-US', {timeZone: 'Europe/Stockholm'}))
   }
 
+  dayOfWeekNumber(date) {
+    return this.toCET(new Date(date)).getDay()
+  }
+
   dayOfWeek(date) {
-    const d = this.toCET(new Date(date))
-    return ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][d.getDay()]
+    return ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][this.dayOfWeekNumber(date)]
   }
 })

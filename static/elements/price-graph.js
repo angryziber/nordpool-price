@@ -4,6 +4,7 @@ import {toFullKwhPrice, toGridKwhPrice, toLocalHour} from './formatters.js'
 customElements.define('price-graph', class extends BaseElement {
   static properties = {
     prices: {type: Array},
+    dayOfWeek: {type: Number},
     hour: {type: Number},
     hourDiff: {type: Number},
     taxPercent: {type: Number},
@@ -104,7 +105,7 @@ customElements.define('price-graph', class extends BaseElement {
       <div class="line" style="height: ${toFullKwhPrice(this.comparisonPrice * 10, this.taxPercent, this.withTax) * 10}px"></div>
       ${(this.prices || Array(24).fill(0)).map((p, h) => {
         const price = toFullKwhPrice(p, this.taxPercent, this.withTax)
-        const gridPrice = toGridKwhPrice(this.gridPriceDay, this.gridPriceNight, h, this.taxPercent, this.withGrid, this.withTax)
+        const gridPrice = toGridKwhPrice(this.gridPriceDay, this.gridPriceNight, h, this.dayOfWeek, this.taxPercent, this.withGrid, this.withTax)
         const total = price + gridPrice
         return html`
           <li class="${h === this.hour ? 'now' : ''}" 

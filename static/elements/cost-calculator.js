@@ -3,6 +3,7 @@ import {toFullKwhPrice, toGridKwhPrice, toLocalHour} from './formatters.js'
 
 customElements.define('cost-calculator', class extends BaseElement {
   static properties = {
+    dayOfWeek: {type: Number},
     hourPrices: {type: Array},
     startHour: {type: Number},
     hourDiff: {type: Number},
@@ -38,7 +39,7 @@ customElements.define('cost-calculator', class extends BaseElement {
     let cents = 0
     for (let i = 0; i < this.hours; i++) {
       const p = this.hourPrices[(this.startHour + i) % this.hourPrices.length]
-      const gridPrice = toGridKwhPrice(this.gridPriceDay, this.gridPriceNight, this.startHour + i, this.taxPercent, this.finalPrices, this.finalPrices)
+      const gridPrice = toGridKwhPrice(this.gridPriceDay, this.gridPriceNight, this.startHour + i, this.dayOfWeek, this.taxPercent, this.finalPrices, this.finalPrices)
       cents += this.kW * (toFullKwhPrice(p, this.taxPercent, this.finalPrices) + gridPrice)
     }
     return cents / 100
