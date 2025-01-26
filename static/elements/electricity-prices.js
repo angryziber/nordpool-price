@@ -14,7 +14,8 @@ customElements.define('electricity-prices', class extends BaseElement {
     hour: {},
     graphDay: {attribute: false},
     calcHour: {attribute: false},
-    gridPrice: {type: Number},
+    gridPriceDay: {type: Number},
+    gridPriceNight: {type: Number},
     taxPercent: {type: Number},
     comparisonPrice: {type: Number},
     withTax: {attribute: false, type: Boolean}
@@ -25,7 +26,8 @@ customElements.define('electricity-prices', class extends BaseElement {
     this.changeCountry(localStorage.getItem('country') || 'EE')
     this.withTax = true
     this.taxPercent = +localStorage['taxPercent'] || 23
-    this.gridPrice = +localStorage['gridPrice'] || 5.5
+    this.gridPriceDay = +localStorage['gridPriceDay'] || 7.41
+    this.gridPriceNight = +localStorage['gridPriceNight'] || 4.28
     this.comparisonPrice = +localStorage['comparisonPrice'] || 16.03
     const cetDate = this.toCET(new Date())
     this.day = this.graphDay = cetDate.toLocaleDateString('lt')
@@ -108,8 +110,8 @@ customElements.define('electricity-prices', class extends BaseElement {
     <button @click=${() => this.graphDay = this.nextDay(1)}>&raquo;</button>
       
     <cost-calculator .hourPrices=${this.dayPrices[this.graphDay]?.concat(this.dayPrices[this.nextDay(-1)] || []) || []} startHour=${this.calcHour} hourDiff=${this.hourDiff}
-                     .taxPercent=${this.taxPercent} .gridPrice=${this.gridPrice} .comparisonPrice=${this.comparisonPrice} .finalPrices=${this.withTax}
-                     @changed=${e => {this.taxPercent = e.detail.taxPercent; this.gridPrice = e.detail.gridPrice; this.comparisonPrice = e.detail.comparisonPrice}}
+                     .taxPercent=${this.taxPercent} .gridPriceDay=${this.gridPriceDay} .gridPriceNight=${this.gridPriceNight} .comparisonPrice=${this.comparisonPrice} .finalPrices=${this.withTax}
+                     @changed=${e => {this.taxPercent = e.detail.taxPercent; this.gridPriceDay = e.detail.gridPriceDay; this.gridPriceNight = e.detail.gridPriceNight; this.comparisonPrice = e.detail.comparisonPrice}}
                      style="margin-top: 1.5em"/>
   `
 

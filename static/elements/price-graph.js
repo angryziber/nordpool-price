@@ -1,5 +1,5 @@
 import {BaseElement, html, css} from '../deps/element.js'
-import {toFullKwhPrice, toLocalHour, toPerKWh} from './formatters.js'
+import {toFullKwhPrice, toLocalHour} from './formatters.js'
 
 customElements.define('price-graph', class extends BaseElement {
   static properties = {

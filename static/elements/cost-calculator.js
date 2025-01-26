@@ -6,7 +6,8 @@ customElements.define('cost-calculator', class extends BaseElement {
     hourPrices: {type: Array},
     startHour: {type: Number},
     hourDiff: {type: Number},
-    gridPrice: {type: Number},
+    gridPriceDay: {type: Number},
+    gridPriceNight: {type: Number},
     taxPercent: {type: Number},
     comparisonPrice: {type: Number},
     finalPrices: {type: Boolean},
@@ -17,7 +18,8 @@ customElements.define('cost-calculator', class extends BaseElement {
 
   constructor() {
     super()
-    this.gridPrice = 0
+    this.gridPriceDay = 0
+    this.gridPriceNight = 0
     this.taxPercent = 0
     this.comparisonPrice = 0
     this.finalPrices = true
@@ -36,7 +38,9 @@ customElements.define('cost-calculator', class extends BaseElement {
     let cents = 0
     for (let i = 0; i < this.hours; i++) {
       const p = this.hourPrices[(this.startHour + i) % this.hourPrices.length]
-      cents += this.kW * (toFullKwhPrice(p, this.taxPercent, this.finalPrices) + (this.finalPrices ? this.gridPrice : 0))
+      const isDay = this.startHour + i >= 7 && this.startHour + i <= 22
+      const gridPrice = isDay ? this.gridPriceDay : this.gridPriceNight
+      cents += this.kW * (toFullKwhPrice(p, this.taxPercent, this.finalPrices) + (this.finalPrices ? gridPrice : 0))
     }
     return cents / 100
   }
@@ -47,10 +51,11 @@ customElements.define('cost-calculator', class extends BaseElement {
     setTimeout(() => $cost.classList.remove('updated'), 500)
     localStorage['kW'] = this.kW
     localStorage['hours'] = this.hours
-    localStorage['gridPrice'] = this.gridPrice
+    localStorage['gridPriceDay'] = this.gridPriceDay
+    localStorage['gridPriceNight'] = this.gridPriceNight
     localStorage['taxPercent'] = this.taxPercent
     localStorage['comparisonPrice'] = this.comparisonPrice
-    this.dispatchEvent(new CustomEvent('changed', {detail: {gridPrice: this.gridPrice, taxPercent: this.taxPercent, comparisonPrice: this.comparisonPrice}}))
+    this.dispatchEvent(new CustomEvent('changed', {detail: {gridPriceDay: this.gridPriceDay, gridPriceNight: this.gridPriceNight, taxPercent: this.taxPercent, comparisonPrice: this.comparisonPrice}}))
   }
 
   static styles = css`
@@ -102,8 +107,12 @@ customElements.define('cost-calculator', class extends BaseElement {
     </div>
     <div style="margin-top: 1em; display: ${this.detailsOpen ? 'block' : 'none'}">
       <span class="field">
-        Grid price <input type="number" .value=${this.gridPrice} @input=${e => this.gridPrice = +e.target.value}> ¢/kWh
+        Grid price day <input type="number" .value=${this.gridPriceDay} @input=${e => this.gridPriceDay = +e.target.value}> ¢/kWh
       </span>
+      <span class="field">
+        Grid price night <input type="number" .value=${this.gridPriceNight} @input=${e => this.gridPriceNight = +e.target.value}> ¢/kWh
+      </span>
+      <div style="margin-top: 0.5em"></div>
       <span class="field">
         Tax <input type="number" .value=${this.taxPercent} @input=${e => this.taxPercent = +e.target.value}> %
       </span>
