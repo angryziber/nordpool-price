@@ -46,14 +46,20 @@ customElements.define('price-graph', class extends BaseElement {
       position: relative;
       height: 100%;
       width: 5%;
-      margin: 0 0.3%;
+    }
+    
+    li.full-hour {
+      margin-left: 0.3%;
     }
     
     .price, .bars {
       position: absolute;
       bottom: 0;
       left: 0; right: 0;
-      overflow: hidden;
+    }
+    
+    .price {
+      transform: rotate(-90deg);
     }
     
     .bars {
@@ -103,19 +109,19 @@ customElements.define('price-graph', class extends BaseElement {
   render = () => html`
     <ul class="day-prices">
       <div class="line" style="height: ${toFullKwhPrice(this.comparisonPrice * 10, this.taxPercent, this.withTax) * 10}px"></div>
-      ${(this.prices || Array(24).fill(0)).map((p, h) => {
+      ${(this.prices || Array(96).fill(0)).map((p, h) => {
         const price = toFullKwhPrice(p, this.taxPercent, this.withTax)
         const gridPrice = toGridKwhPrice(this.gridPriceDay, this.gridPriceNight, h, this.dayOfWeek, this.taxPercent, this.withGrid, this.withTax)
         const total = price + gridPrice
         return html`
-          <li class="${h === this.hour ? 'now' : ''}" 
+          <li class="${Math.floor(h / 4) === this.hour ? 'now' : ''} ${h % 4 === 0 ? 'full-hour' : ''}" 
               @click=${() => this.selected(h)} style="cursor: pointer">
             <div class="bars">
               <div class="electricity ${total < 0 ? 'negative' : ''}" style="height: ${Math.abs(price) * 10}px"></div>
               <div class="grid" style="height: ${gridPrice * 10}px"></div>
             </div>
-            <div class="price">${total.toFixed(1)}</div>
-            <div class="hour">${toLocalHour(h, this.hourDiff)}</div>
+            <div class="price">${h % 4 === 0 || h % 4 === 3 ? total.toFixed(1) : ''}</div>
+            <div class="hour">${h % 4 === 1 ? toLocalHour(Math.floor(h / 4), this.hourDiff) : ''}</div>
           </li>
         `
       })}

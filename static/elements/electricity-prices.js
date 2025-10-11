@@ -12,6 +12,7 @@ customElements.define('electricity-prices', class extends BaseElement {
     dayPrices: {attribute: false},
     day: {},
     hour: {},
+    index: {},
     graphDay: {attribute: false},
     calcHour: {attribute: false},
     gridPriceDay: {type: Number},
@@ -34,6 +35,7 @@ customElements.define('electricity-prices', class extends BaseElement {
     const cetDate = this.toCET(new Date())
     this.day = this.graphDay = cetDate.toLocaleDateString('lt')
     this.hour = this.calcHour = cetDate.getHours()
+    this.index = this.hour * 4 + Math.floor(cetDate.getMinutes() / 15)
   }
 
   async loadPrices() {
@@ -41,18 +43,19 @@ customElements.define('electricity-prices', class extends BaseElement {
     this.dayPrices = await fetch('/api/prices?country=' + this.country).then(res => res.json())
   }
 
-  hourPrice(h = this.hour) {
+  hourPrice(i = this.index) {
     const ps = this.dayPrices
     let d = this.day
-    if (h > 23) {
+    const dayPrices = ps[d]
+    if (i > dayPrices.length - 1) {
       d = Object.keys(ps)[0]
-      h -= 24
+      i -= dayPrices.length
     }
-    else if (h < 0) {
+    else if (i < 0) {
       d = Object.keys(ps)[1]
-      h += 24
+      i += dayPrices.length
     }
-    return toFullKwhPrice(ps[d]?.[h], this.taxPercent, this.withTax)
+    return toFullKwhPrice(ps[d]?.[i], this.taxPercent, this.withTax)
   }
 
   gridPrice(h = this.hour) {
@@ -106,9 +109,9 @@ customElements.define('electricity-prices', class extends BaseElement {
     </p>
     
     <div class="row">
-      <price-card price=${this.hourPriceWithGrid(this.hour - 1)} class="prev"/>
-      <price-card price=${this.hourPriceWithGrid()} trend=${this.hourPrice(this.hour + 1) - this.hourPrice()}/>
-      <price-card price=${this.hourPriceWithGrid(this.hour + 1)} class="next"/>
+      <price-card price=${this.hourPriceWithGrid(this.index - 1)} class="prev"/>
+      <price-card price=${this.hourPriceWithGrid()} trend=${this.hourPrice(this.index + 1) - this.hourPrice()}/>
+      <price-card price=${this.hourPriceWithGrid(this.index + 1)} class="next"/>
     </div>
     
     <price-graph .prices=${this.dayPrices[this.graphDay]} .dayOfWeek=${this.dayOfWeekNumber(this.graphDay)} hour=${this.graphDay === this.day && this.hour} 
