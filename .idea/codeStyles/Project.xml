@@ -3,7 +3,6 @@
     <JSCodeStyleSettings version="0">
       <option name="USE_SEMICOLON_AFTER_STATEMENT" value="false" />
       <option name="USE_DOUBLE_QUOTES" value="false" />
-      <option name="USE_EXPLICIT_JS_EXTENSION" value="TRUE" />
       <option name="USE_PATH_MAPPING" value="NEVER" />
     </JSCodeStyleSettings>
     <codeStyleSettings language="CSS">

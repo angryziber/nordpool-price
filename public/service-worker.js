@@ -3,9 +3,7 @@ self.addEventListener('install', e => {
     caches.open('nordpool').then(cache => cache.addAll([
       '/',
       '/index.html',
-      '/css/global.css',
-      '/css/common.js',
-      '/countries.js',
+      '/global.css',
     ])),
   )
 })
