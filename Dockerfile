@@ -1,4 +1,4 @@
-FROM node:22-alpine
+FROM node:24-alpine
 
 WORKDIR /app
 
@@ -9,6 +9,8 @@ COPY *.json ./
 RUN npm ci
 
 COPY . ./
+
+RUN npm run build
 
 USER app
 RUN npm test

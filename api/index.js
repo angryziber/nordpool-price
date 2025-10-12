@@ -3,7 +3,6 @@ import morgan from 'morgan'
 import 'express-async-errors'
 import {jsonRequest} from './jsonRequest.js'
 import {extractPrices} from './prices.js'
-import countries from '../public/countries.js'
 
 const app = express()
 app.use(express.json())
@@ -18,11 +17,10 @@ app.use(logger)
 
 app.get('/api/prices', async (req, res) => {
   const country = req.query.country ?? 'EE'
-  const hourDiff = countries[country].hourDiff
 
   const start = new Date()
   start.setDate(start.getDate() - 10)
-  start.setHours(hourDiff)
+  start.setHours(0)
   start.setMinutes(0)
   start.setSeconds(0)
   start.setMilliseconds(0)
@@ -36,10 +34,10 @@ app.get('/api/prices', async (req, res) => {
   }
   const r = await jsonRequest(url, res)
   res.header('cache-control', 'max-age=3600')
-  return r.statusCode === 200 ? res.json(extractPrices(JSON.parse(r.text), country, hourDiff)) : res.send(r.text)
+  return r.statusCode === 200 ? res.json(extractPrices(JSON.parse(r.text), country, 1)) : res.send(r.text)
 })
 
-app.use(express.static('static'))
+app.use(express.static('dist'))
 
 const port = 7070
 app.listen(port, () => console.log(`Listening on port ${port}`))
