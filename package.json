@@ -5,10 +5,14 @@
   "description": "",
   "main": "index.js",
   "engines": {
-    "node": "~22"
+    "node": "~24"
   },
   "scripts": {
-    "start": "node api",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "api": "node api",
     "test": "node test/*.test.js test/*/*.test.js"
   },
   "author": "",
@@ -17,5 +21,13 @@
     "express": "^4.21.1",
     "express-async-errors": "^3.1.1",
     "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@tsconfig/svelte": "^5.0.5",
+    "svelte": "^5.39.11",
+    "svelte-check": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9"
   }
 }

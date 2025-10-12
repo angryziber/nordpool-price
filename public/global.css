@@ -9,6 +9,11 @@ body {
   color: var(--fg-color);
 }
 
+input, select, button {
+  font-size: 1em;
+  padding: 0.25rem 0.25rem;
+}
+
 .muted {
   color: gray;
   font-size: 80%;
