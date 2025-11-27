@@ -7,37 +7,24 @@
   import CountrySelect from './CountrySelect.svelte'
   import CostCalculator from './CostCalculator.svelte'
 
-  let country: string
+  const cetDate = toCET(new Date())
+
+  let country = localStorage.getItem('country') || 'EE'
   let dayPrices: Record<string, number[]> = {}
-  let day: string
-  let hour: number
-  let index: number
-  let graphDay: string
-  let calcHour: number
-  let gridPriceDay: number
-  let gridPriceNight: number
-  let taxPercent: number
-  let comparisonPrice: number
-  let withTax: boolean
-  let withGrid: boolean
+  let day = cetDate.toLocaleDateString('lt')
+  let graphDay = day
+  let hour = cetDate.getHours()
+  let calcHour = hour
+  let index = hour * 4 + Math.floor(cetDate.getMinutes() / 15)
+  let gridPriceDay = +localStorage.getItem('gridPriceDay') || 7.41
+  let gridPriceNight = +localStorage.getItem('gridPriceNight') || 4.28
+  let taxPercent = +localStorage.getItem('taxPercent') || 25
+  let comparisonPrice = +localStorage.getItem('comparisonPrice') || 16.03
+  let withTax = true
+  let withGrid = false
   let hourDiff: number = 1
 
-  onMount(async () => {
-    country = localStorage.getItem('country') || 'EE'
-    withTax = true
-    withGrid = false
-    taxPercent = +localStorage.getItem('taxPercent') || 23
-    gridPriceDay = +localStorage.getItem('gridPriceDay') || 7.41
-    gridPriceNight = +localStorage.getItem('gridPriceNight') || 4.28
-    comparisonPrice = +localStorage.getItem('comparisonPrice') || 16.03
-
-    const cetDate = toCET(new Date())
-    day = graphDay = cetDate.toLocaleDateString('lt')
-    hour = calcHour = cetDate.getHours()
-    index = hour * 4 + Math.floor(cetDate.getMinutes() / 15)
-
-    await loadPrices()
-  })
+  onMount(loadPrices)
 
   async function loadPrices() {
     dayPrices = {}
