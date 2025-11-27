@@ -27,9 +27,9 @@
     {@const gridPrice = toGridKwhPrice(gridPriceDay, gridPriceNight, Math.floor(i / 4), dayOfWeek, taxPercent, withGrid, withTax)}
     {@const total = price + gridPrice}
     <li class:now={Math.floor(i / 4) === hour} class:full-hour={i % 4 === 0} on:click={() => selected(i)} style="cursor: pointer">
-      <div class="bars">
-        <div class="electricity" class:negative={total < 0} style="height: {Math.abs(price) * 10}px"></div>
+      <div class="bars" class:negative={total < 0}>
         <div class="grid" style="height: {gridPrice * 10}px"></div>
+        <div class="electricity" style="height: {Math.abs(price) * 10}px"></div>
       </div>
       <div class="price">{i % 4 === 0 || i % 4 === 3 ? total.toFixed(1) : ''}</div>
       <div class="hour">{i % 4 === 1 ? toLocalHour(Math.floor(i / 4), hourDiff) : ''}</div>
@@ -74,10 +74,13 @@
 
   .bars {
     z-index: -1;
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
     height: 100%;
+    transform-origin: top;
+    transform: scaleY(-1) translateY(-100%);
+  }
+
+  .bars.negative {
+    transform: translateY(100%);
   }
 
   .bars .electricity, .bars .grid {
@@ -92,11 +95,6 @@
 
   .bars .grid {
     background: lightpink;
-  }
-
-  .bars .negative {
-    transform-origin: bottom;
-    transform: scaleY(-1);
   }
 
   .now .bars .electricity {
