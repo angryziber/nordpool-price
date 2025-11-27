@@ -3,7 +3,7 @@
   import { toFullKwhPrice, toGridKwhPrice, toLocalHour } from './formatters'
 
   export let dayOfWeek: number
-  export let hourPrices: number[]
+  export let prices: number[]
   export let startHour: number
   export let hourDiff: number
 
@@ -40,16 +40,16 @@
 
   const dispatch = createEventDispatcher()
 
-  function calc() {
+  $: cost = (function() {
     let cents = 0
-    if (!hourPrices) return 0
-    for (let i = 0; i < hours; i++) {
-      const p = hourPrices[(startHour + i) % hourPrices.length]
-      const gridPrice = toGridKwhPrice(gridPriceDay, gridPriceNight, startHour + i, dayOfWeek, taxPercent, finalPrices, finalPrices)
+    if (!prices) return 0
+    for (let h = 0; h < hours; h++) {
+      const p = prices[(startHour + h) * 4 % prices.length]
+      const gridPrice = toGridKwhPrice(gridPriceDay, gridPriceNight, startHour + h, dayOfWeek, taxPercent, finalPrices, finalPrices)
       cents += kW * (toFullKwhPrice(p, taxPercent, finalPrices) + gridPrice)
     }
     return cents / 100
-  }
+  })()
 
   function onPredefinedChange(e: Event) {
     const target = e.target as HTMLSelectElement
@@ -86,7 +86,7 @@
     <input type="number" bind:value={hours}> h
   </span>
 
-  = <strong class="cost" bind:this={costElement}>{calc().toFixed(2)} €</strong>
+  = <strong class="cost" bind:this={costElement}>{cost.toFixed(2)} €</strong>
 
   <div style="margin-top: 1em">
     <button on:click={() => detailsOpen = !detailsOpen}>More {detailsOpen ? '▴' : '▾'}</button>

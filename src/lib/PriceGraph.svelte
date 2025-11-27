@@ -1,10 +1,10 @@
 <script lang="ts">
   import { toFullKwhPrice, toGridKwhPrice, toLocalHour } from './formatters'
-  import { createEventDispatcher } from 'svelte'
 
   export let prices = Array(96).fill(0)
   export let dayOfWeek: number
   export let hour: number
+  export let selectedHour: number
   export let hourDiff: number
   export let taxPercent: number
   export let comparisonPrice: number
@@ -13,10 +13,8 @@
   export let gridPriceNight: number
   export let withGrid: boolean
 
-  const dispatch = createEventDispatcher()
-
-  function selected(h: number) {
-    dispatch('selected', h)
+  function selected(i: number) {
+    selectedHour = Math.floor(i / 4)
   }
 </script>
 

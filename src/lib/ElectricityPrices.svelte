@@ -102,7 +102,7 @@
   </div>
 
   <PriceGraph prices={dayPrices[graphDay]} dayOfWeek={dayOfWeekNumber(graphDay)} hour={graphDay === day ? hour : -1}
-              {hourDiff} on:selected={(e) => calcHour = e.detail}
+              {hourDiff} bind:selectedHour={calcHour}
               {taxPercent} {withTax} {comparisonPrice}
               {gridPriceDay} {gridPriceNight} {withGrid}
   />
@@ -114,7 +114,7 @@
   </select>
   <button on:click={() => graphDay = nextDay(1)}>&raquo;</button>
 
-  <CostCalculator hourPrices={dayPrices[graphDay]?.concat(dayPrices[nextDay(-1)] || []) || []}
+  <CostCalculator prices={dayPrices[graphDay]?.concat(dayPrices[nextDay(-1)] || []) || []}
                   startHour={calcHour} hourDiff={hourDiff} dayOfWeek={dayOfWeekNumber(graphDay)}
                   on:changed={onCostCalculatorChange}
                   style="margin-top: 1.5em"/>
