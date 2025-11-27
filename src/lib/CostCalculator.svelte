@@ -72,7 +72,7 @@
   }
 </script>
 
-<div {...$$restProps}>
+<div class="calc" {...$$restProps}>
   <select on:input={onPredefinedChange}>
     {#each predefined as p}
       <option selected={p === selectedPredefined}>{p.name}</option>
@@ -91,6 +91,7 @@
   <div style="margin-top: 1em">
     <button on:click={() => detailsOpen = !detailsOpen}>More {detailsOpen ? '▴' : '▾'}</button>
   </div>
+
   <div style="margin-top: 1em; display: {detailsOpen ? 'block' : 'none'}">
     <span class="field">
       Grid price day <input type="number" bind:value={gridPriceDay}> ¢/kWh
@@ -109,7 +110,7 @@
 </div>
 
 <style>
-  div {
+  .calc {
     width: 66%;
     max-width: 600px;
     margin: 0 auto;
