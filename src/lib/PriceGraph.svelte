@@ -1,16 +1,13 @@
 <script lang="ts">
-  import { toFullKwhPrice, toGridKwhPrice, toLocalHour } from './formatters'
+  import {toFullKwhPrice, toGridKwhPrice, toLocalHour} from './formatters'
+  import {config} from './config'
 
   export let prices = Array(96).fill(0)
   export let dayOfWeek: number
   export let hour: number
   export let selectedHour: number
   export let hourDiff: number
-  export let taxPercent: number
-  export let comparisonPrice: number
   export let withTax: boolean
-  export let gridPriceDay: number
-  export let gridPriceNight: number
   export let withGrid: boolean
 
   function selected(i: number) {
@@ -19,10 +16,10 @@
 </script>
 
 <ul class="day-prices">
-  <div class="line" style="height: {toFullKwhPrice(comparisonPrice * 10, taxPercent, withTax) * 10}px"></div>
+  <div class="line" style="height: {toFullKwhPrice(config.comparisonPrice * 10, config.taxPercent, withTax) * 10}px"></div>
   {#each prices as p, i}
-    {@const price = toFullKwhPrice(p, taxPercent, withTax)}
-    {@const gridPrice = toGridKwhPrice(gridPriceDay, gridPriceNight, Math.floor(i / 4), dayOfWeek, taxPercent, withGrid, withTax)}
+    {@const price = toFullKwhPrice(p, config.taxPercent, withTax)}
+    {@const gridPrice = toGridKwhPrice(config.gridPriceDay, config.gridPriceNight, Math.floor(i / 4), dayOfWeek, config.taxPercent, withGrid, withTax)}
     {@const total = price + gridPrice}
     <li class:now={Math.floor(i / 4) === hour} class:full-hour={i % 4 === 0} on:click={() => selected(i)} style="cursor: pointer">
       <div class="bars" class:negative={total < 0}>

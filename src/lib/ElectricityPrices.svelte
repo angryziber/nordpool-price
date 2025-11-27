@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { toFullKwhPrice, toLocalHour } from './formatters'
+  import {toFullKwhPrice, toLocalHour} from './formatters'
   import countries from './countries'
   import PriceCard from './PriceCard.svelte'
   import PriceGraph from './PriceGraph.svelte'
   import CountrySelect from './CountrySelect.svelte'
   import CostCalculator from './CostCalculator.svelte'
+  import {config, gridPrice} from "./config.ts";
 
   const cetDate = toCET(new Date())
 
@@ -15,10 +16,6 @@
   let hour = cetDate.getHours()
   let calcHour = hour
   let index = hour * 4 + Math.floor(cetDate.getMinutes() / 15)
-  let gridPriceDay = +localStorage.getItem('gridPriceDay') || 7.41
-  let gridPriceNight = +localStorage.getItem('gridPriceNight') || 4.28
-  let taxPercent = +localStorage.getItem('taxPercent') || 25
-  let comparisonPrice = +localStorage.getItem('comparisonPrice') || 16.03
   let withTax = true
   let withGrid = false
   let hourDiff = 1
@@ -47,11 +44,11 @@
       d = Object.keys(ps)[1]
       i += currentDayPrices.length
     }
-    return toFullKwhPrice(ps[d]?.[i] || 0, taxPercent, withTax)
+    return toFullKwhPrice(ps[d]?.[i] || 0, config.taxPercent, withTax)
   }
 
   function hourGridPrice(h = hour) {
-    return withGrid ? (h >= 6 && h <= 21 ? gridPriceDay : gridPriceNight) : 0
+    return withGrid ? gridPrice(h) : 0
   }
 
   function priceWithGrid(i: number) {
@@ -75,13 +72,6 @@
   function dayOfWeek(date: string) {
     return ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][dayOfWeekNumber(date)]
   }
-
-  function onCostCalculatorChange(e: CustomEvent) {
-    taxPercent = e.detail.taxPercent
-    gridPriceDay = e.detail.gridPriceDay
-    gridPriceNight = e.detail.gridPriceNight
-    comparisonPrice = e.detail.comparisonPrice
-  }
 </script>
 
 {#if dayPrices && country}
@@ -103,8 +93,7 @@
 
   <PriceGraph prices={dayPrices[graphDay]} dayOfWeek={dayOfWeekNumber(graphDay)} hour={graphDay === day ? hour : -1}
               {hourDiff} bind:selectedHour={calcHour}
-              {taxPercent} {withTax} {comparisonPrice}
-              {gridPriceDay} {gridPriceNight} {withGrid}
+              {withTax} {withGrid}
   />
   <button on:click={() => graphDay = nextDay(-1)}>&laquo;</button>
   <select bind:value={graphDay} style="margin-top: 1.5em">
@@ -116,7 +105,6 @@
 
   <CostCalculator prices={dayPrices[graphDay]?.concat(dayPrices[nextDay(-1)] || []) || []}
                   startHour={calcHour} hourDiff={hourDiff} dayOfWeek={dayOfWeekNumber(graphDay)}
-                  on:changed={onCostCalculatorChange}
                   style="margin-top: 1.5em"/>
 {/if}
 

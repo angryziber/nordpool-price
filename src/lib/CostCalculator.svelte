@@ -1,16 +1,13 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from 'svelte'
-  import { toFullKwhPrice, toGridKwhPrice, toLocalHour } from './formatters'
+  import {createEventDispatcher, onMount} from 'svelte'
+  import {toFullKwhPrice, toGridKwhPrice, toLocalHour} from './formatters'
+  import {config, saveConfig} from './config'
 
   export let dayOfWeek: number
   export let prices: number[]
   export let startHour: number
   export let hourDiff: number
 
-  let gridPriceDay = 0
-  let gridPriceNight = 0
-  let taxPercent = 0
-  let comparisonPrice = 0
   let finalPrices = true
   let detailsOpen = false
   let kW: number
@@ -32,10 +29,6 @@
   onMount(() => {
     kW = +localStorage.getItem('kW') || selectedPredefined.kW
     hours = +localStorage.getItem('hours') || selectedPredefined.h
-    gridPriceDay = +localStorage.getItem('gridPriceDay') || 0
-    gridPriceNight = +localStorage.getItem('gridPriceNight') || 0
-    taxPercent = +localStorage.getItem('taxPercent') || 0
-    comparisonPrice = +localStorage.getItem('comparisonPrice') || 0
   })
 
   const dispatch = createEventDispatcher()
@@ -45,8 +38,8 @@
     if (!prices) return 0
     for (let h = 0; h < hours; h++) {
       const p = prices[(startHour + h) * 4 % prices.length]
-      const gridPrice = toGridKwhPrice(gridPriceDay, gridPriceNight, startHour + h, dayOfWeek, taxPercent, finalPrices, finalPrices)
-      cents += kW * (toFullKwhPrice(p, taxPercent, finalPrices) + gridPrice)
+      const gridPrice = toGridKwhPrice(config.gridPriceDay, config.gridPriceNight, startHour + h, dayOfWeek, config.taxPercent, finalPrices, finalPrices)
+      cents += kW * (toFullKwhPrice(p, config.taxPercent, finalPrices) + gridPrice)
     }
     return cents / 100
   })()
@@ -59,16 +52,13 @@
   }
 
   let costElement: HTMLElement
-  $: if (costElement && (kW, hours, gridPriceDay, gridPriceNight, taxPercent, comparisonPrice)) {
+  $: if (costElement) {
     costElement.classList.add('updated')
     setTimeout(() => costElement.classList.remove('updated'), 500)
     localStorage.setItem('kW', String(kW))
     localStorage.setItem('hours', String(hours))
-    localStorage.setItem('gridPriceDay', String(gridPriceDay))
-    localStorage.setItem('gridPriceNight', String(gridPriceNight))
-    localStorage.setItem('taxPercent', String(taxPercent))
-    localStorage.setItem('comparisonPrice', String(comparisonPrice))
-    dispatch('changed', {gridPriceDay, gridPriceNight, taxPercent, comparisonPrice})
+    saveConfig()
+    dispatch('changed')
   }
 </script>
 
@@ -94,17 +84,17 @@
 
   <div style="margin-top: 1em; display: {detailsOpen ? 'block' : 'none'}">
     <span class="field">
-      Grid price day <input type="number" bind:value={gridPriceDay}> ¢/kWh
+      Grid price day <input type="number" bind:value={config.gridPriceDay}> ¢/kWh
     </span>
     <span class="field">
-      Grid price night <input type="number" bind:value={gridPriceNight}> ¢/kWh
+      Grid price night <input type="number" bind:value={config.gridPriceNight}> ¢/kWh
     </span>
     <div style="margin-top: 0.5em"></div>
     <span class="field">
-      Tax <input type="number" bind:value={taxPercent}> %
+      Tax <input type="number" bind:value={config.taxPercent}> %
     </span>
     <span class="field">
-      Comparison <input type="number" bind:value={comparisonPrice}> ¢/kWh
+      Comparison <input type="number" bind:value={config.comparisonPrice}> ¢/kWh
     </span>
   </div>
 </div>
