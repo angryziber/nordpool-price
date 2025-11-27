@@ -22,17 +22,17 @@
 
 <ul class="day-prices">
   <div class="line" style="height: {toFullKwhPrice(comparisonPrice * 10, taxPercent, withTax) * 10}px"></div>
-  {#each prices as p, h}
+  {#each prices as p, i}
     {@const price = toFullKwhPrice(p, taxPercent, withTax)}
-    {@const gridPrice = toGridKwhPrice(gridPriceDay, gridPriceNight, h, dayOfWeek, taxPercent, withGrid, withTax)}
+    {@const gridPrice = toGridKwhPrice(gridPriceDay, gridPriceNight, Math.floor(i / 4), dayOfWeek, taxPercent, withGrid, withTax)}
     {@const total = price + gridPrice}
-    <li class:now={Math.floor(h / 4) === hour} class:full-hour={h % 4 === 0} on:click={() => selected(h)} style="cursor: pointer">
+    <li class:now={Math.floor(i / 4) === hour} class:full-hour={i % 4 === 0} on:click={() => selected(i)} style="cursor: pointer">
       <div class="bars">
         <div class="electricity" class:negative={total < 0} style="height: {Math.abs(price) * 10}px"></div>
         <div class="grid" style="height: {gridPrice * 10}px"></div>
       </div>
-      <div class="price">{h % 4 === 0 || h % 4 === 3 ? total.toFixed(1) : ''}</div>
-      <div class="hour">{h % 4 === 1 ? toLocalHour(Math.floor(h / 4), hourDiff) : ''}</div>
+      <div class="price">{i % 4 === 0 || i % 4 === 3 ? total.toFixed(1) : ''}</div>
+      <div class="hour">{i % 4 === 1 ? toLocalHour(Math.floor(i / 4), hourDiff) : ''}</div>
     </li>
   {/each}
 </ul>

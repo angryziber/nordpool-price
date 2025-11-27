@@ -1,7 +1,9 @@
-export const toFullKwhPrice = (p: number, taxPercent: number, withTax = true): number =>
-  (p / 10) * (1 + (withTax ? taxPercent : 0) / 100)
+export function toFullKwhPrice(p: number, taxPercent: number, withTax = true): number {
+  return (p / 10) * (1 + (withTax ? taxPercent : 0) / 100)
+}
 
-export const toGridKwhPrice = (dayPrice: number, nightPrice: number, hour: number, dayOfWeek: number, taxPercent: number, withGrid = true, withTax = true): number =>
-  (withGrid ? dayOfWeek > 0 && dayOfWeek < 6 && hour >= 6 && hour <= 21 ? dayPrice : nightPrice : 0) * (1 + (withTax ? taxPercent : 0) / 100)
+export function toGridKwhPrice(dayPrice: number, nightPrice: number, hour: number, dayOfWeek: number, taxPercent: number, withGrid = true, withTax = true): number {
+  return (withGrid ? dayOfWeek > 0 && dayOfWeek < 6 && hour >= 6 && hour <= 21 ? dayPrice : nightPrice : 0) * (1 + (withTax ? taxPercent : 0) / 100)
+}
 
 export const toLocalHour = (h: number, diff: number): number => (h + diff) % 24

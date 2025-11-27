@@ -9,7 +9,7 @@
   const cetDate = toCET(new Date())
 
   let country = (localStorage.getItem('country') || 'EE') as keyof typeof countries
-  let dayPrices: Record<string, number[]> = {}
+  let dayPrices: Record<string, number[]>
   let day = cetDate.toLocaleDateString('lt')
   let graphDay = day
   let hour = cetDate.getHours()
@@ -35,7 +35,7 @@
     localStorage.setItem('country', country)
   }
 
-  function hourPrice(i = index) {
+  function price(i = index) {
     const ps = dayPrices
     let d = day
     if (!ps[d]) return 0
@@ -50,12 +50,12 @@
     return toFullKwhPrice(ps[d]?.[i] || 0, taxPercent, withTax)
   }
 
-  function gridPrice(h = hour) {
-    return withGrid ? (h >= 7 && h <= 22 ? gridPriceDay : gridPriceNight) : 0
+  function hourGridPrice(h = hour) {
+    return withGrid ? (h >= 6 && h <= 21 ? gridPriceDay : gridPriceNight) : 0
   }
 
-  function hourPriceWithGrid(h = hour) {
-    return (hourPrice(h) + gridPrice(h)).toFixed(1)
+  function priceWithGrid(i: number) {
+    return +((price(i) + hourGridPrice(Math.floor(i / 4))).toFixed(1))
   }
 
   function nextDay(n: number) {
@@ -96,15 +96,15 @@
   </p>
 
   <div class="row">
-    <PriceCard price={+hourPriceWithGrid(index - 1)} trend={0} class="prev"/>
-    <PriceCard price={+hourPriceWithGrid()} trend={hourPrice(index + 1) - hourPrice()}/>
-    <PriceCard price={+hourPriceWithGrid(index + 1)} trend={0} class="next"/>
+    <PriceCard price={priceWithGrid(index - 1)} trend={0} class="prev"/>
+    <PriceCard price={priceWithGrid(index)} trend={price(index + 1) - price()}/>
+    <PriceCard price={priceWithGrid(index + 1)} trend={0} class="next"/>
   </div>
 
   <PriceGraph prices={dayPrices[graphDay]} dayOfWeek={dayOfWeekNumber(graphDay)} hour={graphDay === day ? hour : -1}
-              hourDiff={hourDiff} on:selected={(e) => calcHour = e.detail}
-              taxPercent={taxPercent} withTax={withTax} comparisonPrice={comparisonPrice}
-              gridPriceDay={gridPriceDay} gridPriceNight={gridPriceNight} withGrid={withGrid}
+              {hourDiff} on:selected={(e) => calcHour = e.detail}
+              {taxPercent} {withTax} {comparisonPrice}
+              {gridPriceDay} {gridPriceNight} {withGrid}
   />
   <button on:click={() => graphDay = nextDay(-1)}>&laquo;</button>
   <select bind:value={graphDay} style="margin-top: 1.5em">
