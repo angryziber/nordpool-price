@@ -6,6 +6,6 @@
 
 <select bind:value={country} style="font-weight: bold">
   {#each Object.keys(countries) as code}
-    <option value={code}>{code}</option>
+    <option>{code}</option>
   {/each}
 </select>

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
   import { toFullKwhPrice, toLocalHour } from './formatters'
   import countries from './countries'
   import PriceCard from './PriceCard.svelte'
@@ -9,7 +8,7 @@
 
   const cetDate = toCET(new Date())
 
-  let country = localStorage.getItem('country') || 'EE'
+  let country = (localStorage.getItem('country') || 'EE') as keyof typeof countries
   let dayPrices: Record<string, number[]> = {}
   let day = cetDate.toLocaleDateString('lt')
   let graphDay = day
@@ -22,13 +21,18 @@
   let comparisonPrice = +localStorage.getItem('comparisonPrice') || 16.03
   let withTax = true
   let withGrid = false
-  let hourDiff: number = 1
-
-  onMount(loadPrices)
+  let hourDiff = 1
 
   async function loadPrices() {
-    dayPrices = {}
     dayPrices = await fetch(`/api/prices?country=${country}`).then(res => res.json())
+  }
+
+  $: changeCountry(country)
+
+  function changeCountry(country: keyof typeof countries) {
+    hourDiff = countries[country].hourDiff
+    loadPrices()
+    localStorage.setItem('country', country)
   }
 
   function hourPrice(i = index) {
@@ -52,13 +56,6 @@
 
   function hourPriceWithGrid(h = hour) {
     return (hourPrice(h) + gridPrice(h)).toFixed(1)
-  }
-
-  function changeCountry(newCountry: string) {
-    country = newCountry
-    hourDiff = countries[country].hourDiff
-    loadPrices()
-    localStorage.setItem('country', country)
   }
 
   function nextDay(n: number) {
@@ -90,7 +87,7 @@
 {#if dayPrices && country}
   <h2>
     NordPool
-    <CountrySelect bind:country on:change={e => changeCountry(e.currentTarget.value)}/>
+    <CountrySelect bind:country/>
   </h2>
   <p class="muted">
     {day} {toLocalHour(hour, hourDiff)}-{toLocalHour(hour + 1, hourDiff)}
