@@ -5,7 +5,9 @@
   import PriceGraph from './PriceGraph.svelte'
   import CountrySelect from './CountrySelect.svelte'
   import CostCalculator from './CostCalculator.svelte'
-  import {config, gridPrice} from "./config.ts";
+  import Config from './Config.ts'
+
+  let config = new Config()
 
   const cetDate = toCET(new Date())
 
@@ -48,7 +50,7 @@
   }
 
   function hourGridPrice(h = hour) {
-    return withGrid ? gridPrice(h) : 0
+    return withGrid ? config.gridPrice(h) : 0
   }
 
   function priceWithGrid(i: number) {
@@ -91,7 +93,7 @@
     <PriceCard price={priceWithGrid(index + 1)} trend={0} class="next"/>
   </div>
 
-  <PriceGraph prices={dayPrices[graphDay]} dayOfWeek={dayOfWeekNumber(graphDay)} hour={graphDay === day ? hour : -1}
+  <PriceGraph {config} prices={dayPrices[graphDay]} dayOfWeek={dayOfWeekNumber(graphDay)} hour={graphDay === day ? hour : -1}
               {hourDiff} bind:selectedHour={calcHour}
               {withTax} {withGrid}
   />
@@ -103,7 +105,7 @@
   </select>
   <button on:click={() => graphDay = nextDay(1)}>&raquo;</button>
 
-  <CostCalculator prices={dayPrices[graphDay]?.concat(dayPrices[nextDay(-1)] || []) || []}
+  <CostCalculator {config} prices={dayPrices[graphDay]?.concat(dayPrices[nextDay(-1)] || []) || []}
                   startHour={calcHour} hourDiff={hourDiff} dayOfWeek={dayOfWeekNumber(graphDay)}
                   style="margin-top: 1.5em"/>
 {/if}

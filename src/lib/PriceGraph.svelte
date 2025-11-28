@@ -1,7 +1,8 @@
 <script lang="ts">
   import {toFullKwhPrice, toGridKwhPrice, toLocalHour} from './formatters'
-  import {config} from './config'
+  import type Config from './Config.ts'
 
+  export let config: Config
   export let prices = Array(96).fill(0)
   export let dayOfWeek: number
   export let hour: number

@@ -1,8 +1,9 @@
 <script lang="ts">
   import {createEventDispatcher, onMount} from 'svelte'
   import {toFullKwhPrice, toGridKwhPrice, toLocalHour} from './formatters'
-  import {config, saveConfig} from './config'
+  import type Config from './Config.ts'
 
+  export let config: Config
   export let dayOfWeek: number
   export let prices: number[]
   export let startHour: number
@@ -57,7 +58,7 @@
     setTimeout(() => costElement.classList.remove('updated'), 500)
     localStorage.setItem('kW', String(kW))
     localStorage.setItem('hours', String(hours))
-    saveConfig()
+    config.save()
     dispatch('changed')
   }
 </script>
