@@ -23,15 +23,19 @@ export default class Config {
     return (h + this.hourDiff) % 24
   }
 
+  gridPrice(h: number) {
+    return h >= this.dayRateStart && h < this.dayRateEnd ? this.gridPriceDay : this.gridPriceNight
+  }
+
+  toFullKwhPrice(p: number) {
+    return (p / 10) * (1 + (this.withTax ? this.taxPercent : 0) / 100)
+  }
+
   load() {
     Object.assign(this, JSON.parse(localStorage.getItem('config') ?? '{}'))
   }
 
   save() {
     localStorage.setItem('config', JSON.stringify(this))
-  }
-
-  gridPrice(h: number) {
-    return h >= this.dayRateStart && h < this.dayRateEnd ? this.gridPriceDay : this.gridPriceNight
   }
 }

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import {toFullKwhPrice} from './formatters'
   import PriceCard from './PriceCard.svelte'
   import PriceGraph from './PriceGraph.svelte'
   import CountrySelect from './CountrySelect.svelte'
@@ -40,7 +39,7 @@
       d = Object.keys(ps)[1]
       i += currentDayPrices.length
     }
-    return toFullKwhPrice(ps[d]?.[i] || 0, config.taxPercent, config.withTax)
+    return config.toFullKwhPrice(ps[d]?.[i] || 0)
   }
 
   function hourGridPrice(h = hour) {
