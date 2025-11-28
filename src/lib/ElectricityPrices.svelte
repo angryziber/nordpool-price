@@ -10,14 +10,14 @@
   const cetDate = toCET(new Date())
 
   let dayPrices: Record<string, number[]> = {}
-  let day = cetDate.toLocaleDateString('lt')
-  let graphDay = day
+  let today = cetDate.toLocaleDateString('lt')
+  let date = today
   let hour = cetDate.getHours()
   let calcHour = hour
   let index = hour * 4 + Math.floor(cetDate.getMinutes() / 15)
 
-  $: prices = dayPrices[day] || Array(96).fill(0)
-  $: dayOfWeek = dayOfWeekNumber(day)
+  $: prices = dayPrices[date] || Array(96).fill(0)
+  $: dayOfWeek = dayOfWeekNumber(date)
 
   async function loadPrices() {
     dayPrices = await fetch(`/api/prices?country=${config.country}`).then(res => res.json())
@@ -31,7 +31,7 @@
   }
 
   function price(i = index) {
-    let d = day
+    let d = date
     if (i > prices.length - 1) {
       d = Object.keys(dayPrices)[0]
       i -= prices.length
@@ -49,8 +49,8 @@
 
   function nextDay(n: number) {
     const days = Object.keys(dayPrices)
-    const i = days.indexOf(graphDay)
-    return i >= 0 && days[i + n] || graphDay
+    const i = days.indexOf(date)
+    return i >= 0 && days[i + n] || date
   }
 
   function dayOfWeekNumber(date: string) {
@@ -71,7 +71,7 @@
   <CountrySelect bind:country={config.country}/>
 </h2>
 <p class="muted">
-  {day} {config.toLocalHour(hour)}-{config.toLocalHour(hour + 1)}
+  {date} {config.toLocalHour(hour)}-{config.toLocalHour(hour + 1)}
   <label><input type="checkbox" bind:checked={config.withTax}> With Tax</label>
   <label><input type="checkbox" bind:checked={config.withGrid}> With Grid</label>
 </p>
@@ -82,20 +82,20 @@
   <PriceCard price={formattedPrice(index + 1)} trend={0} class="next"/>
 </div>
 
-<PriceGraph {config} prices={dayPrices[graphDay]}
-            {dayOfWeek} hour={graphDay === day ? hour : -1}
+<PriceGraph {config} prices={dayPrices[date]}
+            {dayOfWeek} hour={date === today ? hour : -1}
             bind:selectedHour={calcHour}/>
 
-<button on:click={() => graphDay = nextDay(-1)}>&laquo;</button>
-<select bind:value={graphDay} style="margin-top: 1.5em">
+<button on:click={() => date = nextDay(-1)}>&laquo;</button>
+<select bind:value={date} style="margin-top: 1.5em">
   {#each Object.keys(dayPrices) as d}
     <option value={d}>{d} {dayOfWeekName(d)}</option>
   {/each}
 </select>
-<button on:click={() => graphDay = nextDay(1)}>&raquo;</button>
+<button on:click={() => date = nextDay(1)}>&raquo;</button>
 
-<CostCalculator {config} prices={dayPrices[graphDay]?.concat(dayPrices[nextDay(-1)] || []) || []}
-                startHour={calcHour} dayOfWeek={dayOfWeekNumber(graphDay)}
+<CostCalculator {config} prices={dayPrices[date]?.concat(dayPrices[nextDay(-1)] || []) || []}
+                startHour={calcHour} dayOfWeek={dayOfWeekNumber(date)}
                 style="margin-top: 1.5em"/>
 
 <style>
