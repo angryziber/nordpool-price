@@ -1,7 +1,7 @@
 <script lang="ts">
   import countries from './countries'
 
-  export let country: string
+  export let country: keyof typeof countries
 </script>
 
 <select bind:value={country} style="font-weight: bold">

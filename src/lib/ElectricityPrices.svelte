@@ -11,7 +11,6 @@
 
   const cetDate = toCET(new Date())
 
-  let country = (localStorage.getItem('country') || 'EE') as keyof typeof countries
   let dayPrices: Record<string, number[]>
   let day = cetDate.toLocaleDateString('lt')
   let graphDay = day
@@ -23,15 +22,15 @@
   let hourDiff = 1
 
   async function loadPrices() {
-    dayPrices = await fetch(`/api/prices?country=${country}`).then(res => res.json())
+    dayPrices = await fetch(`/api/prices?country=${config.country}`).then(res => res.json())
   }
 
-  $: changeCountry(country)
+  $: changeCountry(config.country)
 
   function changeCountry(country: keyof typeof countries) {
     hourDiff = countries[country].hourDiff
+    config.save()
     loadPrices()
-    localStorage.setItem('country', country)
   }
 
   function price(i = index) {
@@ -76,10 +75,10 @@
   }
 </script>
 
-{#if dayPrices && country}
+{#if dayPrices}
   <h2>
     NordPool
-    <CountrySelect bind:country/>
+    <CountrySelect bind:country={config.country}/>
   </h2>
   <p class="muted">
     {day} {toLocalHour(hour, hourDiff)}-{toLocalHour(hour + 1, hourDiff)}

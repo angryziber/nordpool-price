@@ -1,5 +1,8 @@
+import countries from './countries.ts'
+
 export default class Config {
   constructor(
+    public country: keyof typeof countries = 'EE',
     public gridPriceDay = 7.41,
     public gridPriceNight = 4.28,
     public dayRateStart = 7,
@@ -13,7 +16,7 @@ export default class Config {
   load() {
     Object.keys(this).forEach(key => {
       const v = localStorage.getItem(key)
-      if (v !== null) this[key] = +v
+      if (v !== null) this[key] = typeof this[key] === 'number' ? +v : v
     })
   }
 
