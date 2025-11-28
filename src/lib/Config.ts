@@ -22,13 +22,18 @@ export default class Config {
   toLocalHour(h: number){
     return (h + this.hourDiff) % 24
   }
-
-  gridPrice(h: number) {
-    return h >= this.dayRateStart && h < this.dayRateEnd ? this.gridPriceDay : this.gridPriceNight
+  
+  addTax(p: number) {
+    return p * (1 + (this.withTax ? this.taxPercent : 0) / 100)
   }
 
-  toFullKwhPrice(p: number) {
-    return (p / 10) * (1 + (this.withTax ? this.taxPercent : 0) / 100)
+  gridPrice(h: number, dayOfWeek = 1) {
+    const isDayPrice = dayOfWeek > 0 && dayOfWeek < 6 && h >= this.dayRateStart && h < this.dayRateEnd
+    return this.addTax(isDayPrice ? this.gridPriceDay : this.gridPriceNight)
+  }
+
+  toKWhPrice(p: number) {
+    return this.addTax(p / 10)
   }
 
   load() {

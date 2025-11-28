@@ -1,5 +1,4 @@
 <script lang="ts">
-  import {toGridKwhPrice} from './formatters'
   import type Config from './Config.ts'
 
   export let config: Config
@@ -14,10 +13,10 @@
 </script>
 
 <ul class="day-prices">
-  <div class="line" style="height: {config.toFullKwhPrice(config.comparisonPrice * 10) * 10}px"></div>
+  <div class="line" style="height: {config.toKWhPrice(config.comparisonPrice * 10) * 10}px"></div>
   {#each prices as p, i}
-    {@const price = config.toFullKwhPrice(p)}
-    {@const gridPrice = toGridKwhPrice(config.gridPriceDay, config.gridPriceNight, Math.floor(i / 4), dayOfWeek, config.taxPercent, config.withGrid, config.withTax)}
+    {@const price = config.toKWhPrice(p)}
+    {@const gridPrice = config.gridPrice(Math.floor(i / 4), dayOfWeek)}
     {@const total = price + gridPrice}
     <li class:now={Math.floor(i / 4) === hour} class:full-hour={i % 4 === 0} on:click={() => selected(i)} style="cursor: pointer">
       <div class="bars" class:negative={total < 0}>

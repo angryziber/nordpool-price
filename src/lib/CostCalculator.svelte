@@ -1,6 +1,5 @@
 <script lang="ts">
   import {createEventDispatcher, onMount} from 'svelte'
-  import {toGridKwhPrice} from './formatters'
   import type Config from './Config.ts'
 
   export let config: Config
@@ -37,8 +36,7 @@
     if (!prices) return 0
     for (let h = 0; h < hours; h++) {
       const p = prices[(startHour + h) * 4 % prices.length]
-      const gridPrice = toGridKwhPrice(config.gridPriceDay, config.gridPriceNight, startHour + h, dayOfWeek, config.taxPercent, config.withGrid, config.withTax)
-      cents += kW * (config.toFullKwhPrice(p) + gridPrice)
+      cents += kW * (config.toKWhPrice(p) + config.gridPrice(startHour + h, dayOfWeek))
     }
     return cents / 100
   })()

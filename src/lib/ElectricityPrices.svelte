@@ -39,7 +39,7 @@
       d = Object.keys(ps)[1]
       i += currentDayPrices.length
     }
-    return config.toFullKwhPrice(ps[d]?.[i] || 0)
+    return config.toKWhPrice(ps[d]?.[i] || 0)
   }
 
   function hourGridPrice(h = hour) {
