@@ -1,6 +1,5 @@
 <script lang="ts">
   import {toFullKwhPrice, toLocalHour} from './formatters'
-  import countries from './countries'
   import PriceCard from './PriceCard.svelte'
   import PriceGraph from './PriceGraph.svelte'
   import CountrySelect from './CountrySelect.svelte'
@@ -19,16 +18,14 @@
   let index = hour * 4 + Math.floor(cetDate.getMinutes() / 15)
   let withTax = true
   let withGrid = false
-  let hourDiff = 1
 
   async function loadPrices() {
     dayPrices = await fetch(`/api/prices?country=${config.country}`).then(res => res.json())
   }
 
-  $: changeCountry(config.country)
+  $: if (config.country) changeCountry()
 
-  function changeCountry(country: keyof typeof countries) {
-    hourDiff = countries[country].hourDiff
+  function changeCountry() {
     config.save()
     loadPrices()
   }
@@ -81,7 +78,7 @@
     <CountrySelect bind:country={config.country}/>
   </h2>
   <p class="muted">
-    {day} {toLocalHour(hour, hourDiff)}-{toLocalHour(hour + 1, hourDiff)}
+    {day} {toLocalHour(hour, config.hourDiff)}-{toLocalHour(hour + 1, config.hourDiff)}
     <label><input type="checkbox" bind:checked={withTax}> With Tax</label>
     <label><input type="checkbox" bind:checked={withGrid}> With Grid</label>
   </p>
@@ -93,7 +90,7 @@
   </div>
 
   <PriceGraph {config} prices={dayPrices[graphDay]} dayOfWeek={dayOfWeekNumber(graphDay)} hour={graphDay === day ? hour : -1}
-              {hourDiff} bind:selectedHour={calcHour}
+              bind:selectedHour={calcHour}
               {withTax} {withGrid}
   />
   <button on:click={() => graphDay = nextDay(-1)}>&laquo;</button>
@@ -105,7 +102,7 @@
   <button on:click={() => graphDay = nextDay(1)}>&raquo;</button>
 
   <CostCalculator {config} prices={dayPrices[graphDay]?.concat(dayPrices[nextDay(-1)] || []) || []}
-                  startHour={calcHour} hourDiff={hourDiff} dayOfWeek={dayOfWeekNumber(graphDay)}
+                  startHour={calcHour} dayOfWeek={dayOfWeekNumber(graphDay)}
                   style="margin-top: 1.5em"/>
 {/if}
 

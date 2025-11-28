@@ -7,7 +7,6 @@
   export let dayOfWeek: number
   export let hour: number
   export let selectedHour: number
-  export let hourDiff: number
   export let withTax: boolean
   export let withGrid: boolean
 
@@ -28,7 +27,7 @@
         <div class="electricity" style="height: {Math.abs(price) * 10}px"></div>
       </div>
       <div class="price">{i % 4 === 0 || i % 4 === 3 ? total.toFixed(1) : ''}</div>
-      <div class="hour">{i % 4 === 1 ? toLocalHour(Math.floor(i / 4), hourDiff) : ''}</div>
+      <div class="hour">{i % 4 === 1 ? toLocalHour(Math.floor(i / 4), config.hourDiff) : ''}</div>
     </li>
   {/each}
 </ul>

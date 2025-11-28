@@ -7,7 +7,6 @@
   export let dayOfWeek: number
   export let prices: number[]
   export let startHour: number
-  export let hourDiff: number
 
   let finalPrices = true
   let detailsOpen = false
@@ -73,7 +72,7 @@
     <input type="number" bind:value={kW}> kW
   </span>
   <span class="field">
-    start at {toLocalHour(startHour, hourDiff)} for
+    start at {toLocalHour(startHour, config.hourDiff)} for
     <input type="number" bind:value={hours}> h
   </span>
 
