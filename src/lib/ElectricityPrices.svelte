@@ -23,13 +23,14 @@
   }
 
   $: if (config.country) changeCountry()
+  $: if (Math.floor(index / pricesPerHour) !== hour) index = hour * pricesPerHour
 
   function changeCountry() {
     config.save()
     loadPrices()
   }
 
-  function price(dayPrices: Record<string, number[]>, i: number) {
+  function wrapPrice(dayPrices: Record<string, number[]>, config: Config, date: string, i: number) {
     let d = date
     if (i > pricesPerDay - 1) {
       d = Object.keys(dayPrices)[0]
@@ -41,6 +42,8 @@
     const h = Math.floor(i / pricesPerHour)
     return config.toFullPrice(dayPrices[d]?.[i] || 0, h, dayOfWeekNumber(d))
   }
+
+  $: price = (i: number) => wrapPrice(dayPrices, config, date, i)
 </script>
 
 <h2>
@@ -54,9 +57,9 @@
 </p>
 
 <div class="row">
-  <PriceCard price={formattedPrice(price(dayPrices, index - 1))} trend={0} class="prev"/>
-  <PriceCard price={formattedPrice(price(dayPrices, index))} trend={price(dayPrices, index + 1) - price(dayPrices, index)}/>
-  <PriceCard price={formattedPrice(price(dayPrices, index + 1))} trend={0} class="next"/>
+  <PriceCard price={formattedPrice(price(index - 1))} trend={0} class="prev"/>
+  <PriceCard price={formattedPrice(price(index))} trend={price(index + 1) - price(index)}/>
+  <PriceCard price={formattedPrice(price(index + 1))} trend={0} class="next"/>
 </div>
 
 <PriceGraph {config} prices={dayPrices[date] ?? Array(pricesPerDay).fill(0)} {dayOfWeek} bind:hour/>
