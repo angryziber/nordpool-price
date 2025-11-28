@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {toFullKwhPrice, toGridKwhPrice, toLocalHour} from './formatters'
+  import {toFullKwhPrice, toGridKwhPrice} from './formatters'
   import type Config from './Config.ts'
 
   export let config: Config
@@ -27,7 +27,7 @@
         <div class="electricity" style="height: {Math.abs(price) * 10}px"></div>
       </div>
       <div class="price">{i % 4 === 0 || i % 4 === 3 ? total.toFixed(1) : ''}</div>
-      <div class="hour">{i % 4 === 1 ? toLocalHour(Math.floor(i / 4), config.hourDiff) : ''}</div>
+      <div class="hour">{i % 4 === 1 ? config.toLocalHour(Math.floor(i / 4)) : ''}</div>
     </li>
   {/each}
 </ul>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import {createEventDispatcher, onMount} from 'svelte'
-  import {toFullKwhPrice, toGridKwhPrice, toLocalHour} from './formatters'
+  import {toFullKwhPrice, toGridKwhPrice} from './formatters'
   import type Config from './Config.ts'
 
   export let config: Config
@@ -72,7 +72,7 @@
     <input type="number" bind:value={kW}> kW
   </span>
   <span class="field">
-    start at {toLocalHour(startHour, config.hourDiff)} for
+    start at {config.toLocalHour(startHour)} for
     <input type="number" bind:value={hours}> h
   </span>
 

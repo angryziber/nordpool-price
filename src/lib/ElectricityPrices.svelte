@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {toFullKwhPrice, toLocalHour} from './formatters'
+  import {toFullKwhPrice} from './formatters'
   import PriceCard from './PriceCard.svelte'
   import PriceGraph from './PriceGraph.svelte'
   import CountrySelect from './CountrySelect.svelte'
@@ -78,7 +78,7 @@
     <CountrySelect bind:country={config.country}/>
   </h2>
   <p class="muted">
-    {day} {toLocalHour(hour, config.hourDiff)}-{toLocalHour(hour + 1, config.hourDiff)}
+    {day} {config.toLocalHour(hour)}-{config.toLocalHour(hour + 1)}
     <label><input type="checkbox" bind:checked={withTax}> With Tax</label>
     <label><input type="checkbox" bind:checked={withGrid}> With Grid</label>
   </p>

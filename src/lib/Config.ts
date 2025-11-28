@@ -17,6 +17,10 @@ export default class Config {
     return countries[this.country].hourDiff
   }
 
+  toLocalHour(h: number){
+    return (h + this.hourDiff) % 24
+  }
+
   load() {
     Object.keys(this).forEach(key => {
       const v = localStorage.getItem(key)
