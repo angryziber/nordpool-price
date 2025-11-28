@@ -1,14 +1,7 @@
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open('nordpool').then(cache => cache.addAll([
-      '/',
-      '/index.html',
-      '/global.css',
-    ])),
-  )
+addEventListener('install', e => {
+  skipWaiting()
 })
 
-self.addEventListener('fetch', e => {
-  console.log(e.request.url)
-  e.respondWith(caches.match(e.request).then((response) => response || fetch(e.request)))
-})
+// self.addEventListener('fetch', e => {
+//   e.respondWith(caches.match(e.request).then((response) => response || fetch(e.request)))
+// })
