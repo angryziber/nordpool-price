@@ -2,7 +2,7 @@
   import type Config from './Config.ts'
 
   export let config: Config
-  export let prices = Array(96).fill(0)
+  export let prices: number[]
   export let dayOfWeek: number
   export let hour: number
   export let selectedHour: number
