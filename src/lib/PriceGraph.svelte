@@ -5,10 +5,9 @@
   export let prices: number[]
   export let dayOfWeek: number
   export let hour: number
-  export let selectedHour: number
 
   function selected(i: number) {
-    selectedHour = Math.floor(i / pricesPerHour)
+    hour = Math.floor(i / pricesPerHour)
   }
 </script>
 
@@ -19,7 +18,7 @@
     {@const price = config.toKWhPrice(p)}
     {@const gridPrice = config.withGrid ? config.gridPrice(Math.floor(i / pricesPerHour), dayOfWeek) : 0}
     {@const total = price + gridPrice}
-    <li class:now={Math.floor(i / 4) === hour} class:full-hour={i % 4 === 0} on:click={() => selected(i)} style="cursor: pointer">
+    <li class:now={Math.floor(i / pricesPerHour) === hour} class:full-hour={i % 4 === 0} on:click={() => selected(i)} style="cursor: pointer">
       <div class="bars" class:negative={total < 0}>
         <div class="grid" style="height: {gridPrice * 10}px"></div>
         <div class="electricity" style="height: {Math.abs(price) * 10}px"></div>

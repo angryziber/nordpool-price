@@ -10,13 +10,10 @@
   const cetDate = toCET(new Date())
 
   let dayPrices: Record<string, number[]> = {}
-  let today = cetDate.toLocaleDateString('lt')
-  let date = today
+  let date = cetDate.toLocaleDateString('lt')
   let hour = cetDate.getHours()
-  let calcHour = hour
   let index = hour * pricesPerHour + Math.floor(cetDate.getMinutes() / (60 / pricesPerHour))
 
-  $: prices = dayPrices[date] || Array(pricesPerDay).fill(0)
   $: dayOfWeek = dayOfWeekNumber(date)
 
   async function loadPrices() {
@@ -30,21 +27,21 @@
     loadPrices()
   }
 
-  function price(i = index) {
+  function price(dayPrices: Record<string, number[]>, i: number) {
     let d = date
-    if (i > prices.length - 1) {
+    if (i > pricesPerDay - 1) {
       d = Object.keys(dayPrices)[0]
-      i -= prices.length
+      i -= pricesPerDay
     } else if (i < 0) {
       d = Object.keys(dayPrices)[1]
-      i += prices.length
+      i += pricesPerDay
     }
     const h = Math.floor(i / pricesPerHour)
     return config.toFullPrice(dayPrices[d]?.[i] || 0, h, dayOfWeekNumber(d))
   }
 
-  function formattedPrice(i: number) {
-    return +price(i).toFixed(1)
+  function formattedPrice(p: number) {
+    return +p.toFixed(1)
   }
 
   function nextDay(n: number) {
@@ -77,14 +74,12 @@
 </p>
 
 <div class="row">
-  <PriceCard price={formattedPrice(index - 1)} trend={0} class="prev"/>
-  <PriceCard price={formattedPrice(index)} trend={price(index + 1) - price()}/>
-  <PriceCard price={formattedPrice(index + 1)} trend={0} class="next"/>
+  <PriceCard price={formattedPrice(price(dayPrices, index - 1))} trend={0} class="prev"/>
+  <PriceCard price={formattedPrice(price(dayPrices, index))} trend={price(dayPrices, index + 1) - price(dayPrices, index)}/>
+  <PriceCard price={formattedPrice(price(dayPrices, index + 1))} trend={0} class="next"/>
 </div>
 
-<PriceGraph {config} prices={dayPrices[date]}
-            {dayOfWeek} hour={date === today ? hour : -1}
-            bind:selectedHour={calcHour}/>
+<PriceGraph {config} prices={dayPrices[date] ?? Array(pricesPerDay).fill(0)} {dayOfWeek} bind:hour/>
 
 <button on:click={() => date = nextDay(-1)}>&laquo;</button>
 <select bind:value={date} style="margin-top: 1.5em">
@@ -95,7 +90,7 @@
 <button on:click={() => date = nextDay(1)}>&raquo;</button>
 
 <CostCalculator {config} prices={dayPrices[date]?.concat(dayPrices[nextDay(-1)] || []) || []}
-                startHour={calcHour} dayOfWeek={dayOfWeekNumber(date)}
+                startHour={hour} dayOfWeek={dayOfWeekNumber(date)}
                 style="margin-top: 1.5em"/>
 
 <style>
