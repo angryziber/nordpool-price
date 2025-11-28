@@ -9,6 +9,8 @@ export default class Config {
     public dayRateEnd = 22,
     public taxPercent = 25,
     public comparisonPrice = 16.03,
+    public withTax = true,
+    public withGrid = false,
   ) {
     this.load()
   }
@@ -22,16 +24,11 @@ export default class Config {
   }
 
   load() {
-    Object.keys(this).forEach(key => {
-      const v = localStorage.getItem(key)
-      if (v !== null) this[key] = typeof this[key] === 'number' ? +v : v
-    })
+    Object.assign(this, JSON.parse(localStorage.getItem('config') ?? '{}'))
   }
 
   save() {
-    Object.entries(this).forEach(([key, value]) => {
-      localStorage.setItem(key, value.toString())
-    })
+    localStorage.setItem('config', JSON.stringify(this))
   }
 
   gridPrice(h: number) {

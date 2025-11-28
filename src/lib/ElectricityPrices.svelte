@@ -16,8 +16,6 @@
   let hour = cetDate.getHours()
   let calcHour = hour
   let index = hour * 4 + Math.floor(cetDate.getMinutes() / 15)
-  let withTax = true
-  let withGrid = false
 
   async function loadPrices() {
     dayPrices = await fetch(`/api/prices?country=${config.country}`).then(res => res.json())
@@ -42,11 +40,11 @@
       d = Object.keys(ps)[1]
       i += currentDayPrices.length
     }
-    return toFullKwhPrice(ps[d]?.[i] || 0, config.taxPercent, withTax)
+    return toFullKwhPrice(ps[d]?.[i] || 0, config.taxPercent, config.withTax)
   }
 
   function hourGridPrice(h = hour) {
-    return withGrid ? config.gridPrice(h) : 0
+    return config.withGrid ? config.gridPrice(h) : 0
   }
 
   function priceWithGrid(i: number) {
@@ -79,8 +77,8 @@
   </h2>
   <p class="muted">
     {day} {config.toLocalHour(hour)}-{config.toLocalHour(hour + 1)}
-    <label><input type="checkbox" bind:checked={withTax}> With Tax</label>
-    <label><input type="checkbox" bind:checked={withGrid}> With Grid</label>
+    <label><input type="checkbox" bind:checked={config.withTax}> With Tax</label>
+    <label><input type="checkbox" bind:checked={config.withGrid}> With Grid</label>
   </p>
 
   <div class="row">
@@ -90,9 +88,7 @@
   </div>
 
   <PriceGraph {config} prices={dayPrices[graphDay]} dayOfWeek={dayOfWeekNumber(graphDay)} hour={graphDay === day ? hour : -1}
-              bind:selectedHour={calcHour}
-              {withTax} {withGrid}
-  />
+              bind:selectedHour={calcHour}/>
   <button on:click={() => graphDay = nextDay(-1)}>&laquo;</button>
   <select bind:value={graphDay} style="margin-top: 1.5em">
     {#each Object.keys(dayPrices) as d}
