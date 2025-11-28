@@ -1,5 +1,8 @@
 import countries from './countries.ts'
 
+export const pricesPerHour = 4
+export const pricesPerDay = pricesPerHour * 24
+
 export default class Config {
   constructor(
     public country: keyof typeof countries = 'EE',

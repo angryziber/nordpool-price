@@ -3,7 +3,7 @@
   import PriceGraph from './PriceGraph.svelte'
   import CountrySelect from './CountrySelect.svelte'
   import CostCalculator from './CostCalculator.svelte'
-  import Config from './Config.ts'
+  import Config, {pricesPerDay, pricesPerHour} from './Config.ts'
 
   let config = new Config()
 
@@ -14,9 +14,9 @@
   let date = today
   let hour = cetDate.getHours()
   let calcHour = hour
-  let index = hour * 4 + Math.floor(cetDate.getMinutes() / 15)
+  let index = hour * pricesPerHour + Math.floor(cetDate.getMinutes() / (60 / pricesPerHour))
 
-  $: prices = dayPrices[date] || Array(96).fill(0)
+  $: prices = dayPrices[date] || Array(pricesPerDay).fill(0)
   $: dayOfWeek = dayOfWeekNumber(date)
 
   async function loadPrices() {
@@ -39,7 +39,7 @@
       d = Object.keys(dayPrices)[1]
       i += prices.length
     }
-    const h = Math.floor(i / 4)
+    const h = Math.floor(i / pricesPerHour)
     return config.toFullPrice(dayPrices[d]?.[i] || 0, h, dayOfWeekNumber(d))
   }
 
