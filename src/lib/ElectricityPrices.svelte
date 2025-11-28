@@ -87,6 +87,7 @@
   <PriceGraph {config} prices={dayPrices[graphDay]}
               {dayOfWeek} hour={graphDay === day ? hour : -1}
               bind:selectedHour={calcHour}/>
+
   <button on:click={() => graphDay = nextDay(-1)}>&laquo;</button>
   <select bind:value={graphDay} style="margin-top: 1.5em">
     {#each Object.keys(dayPrices) as d}
