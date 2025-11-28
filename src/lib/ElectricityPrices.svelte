@@ -16,6 +16,8 @@
   let calcHour = hour
   let index = hour * 4 + Math.floor(cetDate.getMinutes() / 15)
 
+  $: dayOfWeek = dayOfWeekNumber(day)
+
   async function loadPrices() {
     dayPrices = await fetch(`/api/prices?country=${config.country}`).then(res => res.json())
   }
@@ -39,15 +41,11 @@
       d = Object.keys(ps)[1]
       i += currentDayPrices.length
     }
-    return config.toKWhPrice(ps[d]?.[i] || 0)
+    return config.toFullPrice(ps[d]?.[i] || 0, Math.floor(i / 4), dayOfWeek)
   }
 
-  function hourGridPrice(h = hour) {
-    return config.withGrid ? config.gridPrice(h) : 0
-  }
-
-  function priceWithGrid(i: number) {
-    return +((price(i) + hourGridPrice(Math.floor(i / 4))).toFixed(1))
+  function formattedPrice(i: number) {
+    return +price(i).toFixed(1)
   }
 
   function nextDay(n: number) {
@@ -56,16 +54,16 @@
     return i >= 0 && days[i + n] || graphDay
   }
 
-  function toCET(d: Date) {
-    return new Date(d.toLocaleString('en-US', { timeZone: 'Europe/Stockholm' }))
-  }
-
   function dayOfWeekNumber(date: string) {
     return toCET(new Date(date)).getDay()
   }
 
-  function dayOfWeek(date: string) {
+  function dayOfWeekName(date: string) {
     return ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][dayOfWeekNumber(date)]
+  }
+
+  function toCET(d: Date) {
+    return new Date(d.toLocaleString('en-US', { timeZone: 'Europe/Stockholm' }))
   }
 </script>
 
@@ -81,17 +79,18 @@
   </p>
 
   <div class="row">
-    <PriceCard price={priceWithGrid(index - 1)} trend={0} class="prev"/>
-    <PriceCard price={priceWithGrid(index)} trend={price(index + 1) - price()}/>
-    <PriceCard price={priceWithGrid(index + 1)} trend={0} class="next"/>
+    <PriceCard price={formattedPrice(index - 1)} trend={0} class="prev"/>
+    <PriceCard price={formattedPrice(index)} trend={price(index + 1) - price()}/>
+    <PriceCard price={formattedPrice(index + 1)} trend={0} class="next"/>
   </div>
 
-  <PriceGraph {config} prices={dayPrices[graphDay]} dayOfWeek={dayOfWeekNumber(graphDay)} hour={graphDay === day ? hour : -1}
+  <PriceGraph {config} prices={dayPrices[graphDay]}
+              {dayOfWeek} hour={graphDay === day ? hour : -1}
               bind:selectedHour={calcHour}/>
   <button on:click={() => graphDay = nextDay(-1)}>&laquo;</button>
   <select bind:value={graphDay} style="margin-top: 1.5em">
     {#each Object.keys(dayPrices) as d}
-      <option value={d}>{d} {dayOfWeek(d)}</option>
+      <option value={d}>{d} {dayOfWeekName(d)}</option>
     {/each}
   </select>
   <button on:click={() => graphDay = nextDay(1)}>&raquo;</button>

@@ -36,6 +36,10 @@ export default class Config {
     return this.addTax(p / 10)
   }
 
+  toFullPrice(p: number, h: number, dayOfWeek = 1) {
+    return this.toKWhPrice(p) + (this.withGrid ? this.gridPrice(h, dayOfWeek) : 0)
+  }
+
   load() {
     Object.assign(this, JSON.parse(localStorage.getItem('config') ?? '{}'))
   }
