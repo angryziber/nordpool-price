@@ -4,6 +4,8 @@
   import CountrySelect from './CountrySelect.svelte'
   import CostCalculator from './CostCalculator.svelte'
   import Config, {pricesPerDay, pricesPerHour} from './Config.ts'
+  import {dayOfWeekNumber, formattedPrice, nextDay, toCET} from './utils.ts'
+  import DateSelector from './DateSelector.svelte'
 
   let config = new Config()
 
@@ -39,28 +41,6 @@
     const h = Math.floor(i / pricesPerHour)
     return config.toFullPrice(dayPrices[d]?.[i] || 0, h, dayOfWeekNumber(d))
   }
-
-  function formattedPrice(p: number) {
-    return +p.toFixed(1)
-  }
-
-  function nextDay(n: number) {
-    const days = Object.keys(dayPrices)
-    const i = days.indexOf(date)
-    return i >= 0 && days[i + n] || date
-  }
-
-  function dayOfWeekNumber(date: string) {
-    return toCET(new Date(date)).getDay()
-  }
-
-  function dayOfWeekName(date: string) {
-    return ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][dayOfWeekNumber(date)]
-  }
-
-  function toCET(d: Date) {
-    return new Date(d.toLocaleString('en-US', { timeZone: 'Europe/Stockholm' }))
-  }
 </script>
 
 <h2>
@@ -81,15 +61,9 @@
 
 <PriceGraph {config} prices={dayPrices[date] ?? Array(pricesPerDay).fill(0)} {dayOfWeek} bind:hour/>
 
-<button on:click={() => date = nextDay(-1)}>&laquo;</button>
-<select bind:value={date} style="margin-top: 1.5em">
-  {#each Object.keys(dayPrices) as d}
-    <option value={d}>{d} {dayOfWeekName(d)}</option>
-  {/each}
-</select>
-<button on:click={() => date = nextDay(1)}>&raquo;</button>
+<DateSelector bind:date {dayPrices}/>
 
-<CostCalculator {config} prices={dayPrices[date]?.concat(dayPrices[nextDay(-1)] || []) || []}
+<CostCalculator {config} prices={dayPrices[date]?.concat(dayPrices[nextDay(dayPrices, date, -1)] || []) || []}
                 startHour={hour} dayOfWeek={dayOfWeekNumber(date)}
                 style="margin-top: 1.5em"/>
 
@@ -106,7 +80,7 @@
     opacity: 0.3;
   }
 
-  button, select {
+  :global(button, select) {
     padding: 0.5rem 1rem;
   }
 </style>
