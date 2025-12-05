@@ -1,0 +1,13 @@
+services:
+  nordpool:
+    build: .
+    restart: always
+    networks:
+      - proxy
+    labels:
+      - caddy=nordpool.azib.net
+      - caddy.reverse_proxy={{upstreams 7070}}
+
+networks:
+  proxy:
+    external: true
